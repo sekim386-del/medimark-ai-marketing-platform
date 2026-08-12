@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메디마크 채널 운영 지원 도구</title>
+<style>
+  :root {
+    --bg: #F3F6F6;
+    --surface: #FFFFFF;
+    --surface-alt: #EAF0F0;
+    --ink: #17242A;
+    --ink-soft: #4B5D63;
+    --ink-faint: #7C8D92;
+    --accent: #0E8F82;
+    --accent-strong: #0A6E63;
+    --accent-soft-bg: #E1F4F0;
+    --line: #D7E1E1;
+    --good: #2E7D46;
+    --good-bg: #DFF0E2;
+    --shadow: 0 1px 2px rgba(15, 40, 43, 0.06), 0 6px 20px rgba(15, 40, 43, 0.06);
+    --brand-blue: #12AEDD;
+    --brand-teal: #00C08B;
+    --brand-gray: #8A8F93;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0E1416; --surface: #161F22; --surface-alt: #1D2A2D;
+    --ink: #E4EDEE; --ink-soft: #9FB4B8; --ink-faint: #6F868A;
+    --accent: #3FCDBB; --accent-strong: #7DE4D5; --accent-soft-bg: #143732;
+    --line: #2A3A3D; --good: #5FBD7A; --good-bg: #1C3324;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --brand-blue: #4FC4EA; --brand-teal: #2FE0AA; --brand-gray: #9AA0A4;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1416; --surface: #161F22; --surface-alt: #1D2A2D;
+      --ink: #E4EDEE; --ink-soft: #9FB4B8; --ink-faint: #6F868A;
+      --accent: #3FCDBB; --accent-strong: #7DE4D5; --accent-soft-bg: #143732;
+      --line: #2A3A3D; --good: #5FBD7A; --good-bg: #1C3324;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+      --brand-blue: #4FC4EA; --brand-teal: #2FE0AA; --brand-gray: #9AA0A4;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Pretendard', '맑은 고딕', 'Malgun Gothic', -apple-system, sans-serif;
+    line-height: 1.6;
+    padding: 40px 20px 90px;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; }
+
+  .brandmark { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .brandmark .mark-icon { width: 22px; height: 22px; flex-shrink: 0; display: block; }
+  .brandmark .wordmark { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1; }
+  .brandmark .w-medi {
+    background: linear-gradient(100deg, var(--brand-blue), var(--brand-teal));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .brandmark .w-mark { color: var(--brand-gray); font-weight: 700; }
+
+  .eyebrow { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; }
+  h1 { font-size: 1.5rem; font-weight: 800; margin: 4px 0 14px; text-wrap: balance; }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 600;
+    color: var(--accent-strong); background: var(--accent-soft-bg); border: 1px solid var(--line);
+    border-radius: 999px; padding: 5px 12px;
+  }
+  .badge.dim { color: var(--ink-soft); background: var(--surface-alt); }
+
+  .top-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .progress-track {
+    flex: 1; min-width: 160px; height: 8px; background: var(--surface-alt); border-radius: 999px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(100deg, var(--brand-blue), var(--brand-teal));
+    border-radius: 999px; width: 0%; transition: width 0.25s ease;
+  }
+  .progress-label { font-size: 0.78rem; font-weight: 700; color: var(--ink-soft); white-space: nowrap; }
+
+  .title-field {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: var(--shadow); padding: 16px 18px; margin-bottom: 18px;
+  }
+  .title-field label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; }
+  .title-field input {
+    width: 100%; border: none; background: transparent; font-size: 1.15rem; font-weight: 700;
+    color: var(--ink); font-family: inherit; padding: 2px 0;
+  }
+  .title-field input:focus { outline: none; }
+  .title-field input::placeholder { color: var(--ink-faint); font-weight: 500; }
+
+  section.card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow); padding: 22px 24px; margin-bottom: 16px;
+  }
+  .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+  .card-head .htitle { display: flex; align-items: baseline; gap: 8px; }
+  .card-head .num { font-size: 0.74rem; font-weight: 700; color: var(--accent); letter-spacing: 0.06em; }
+  .card-head h2 { font-size: 1rem; font-weight: 700; margin: 0; }
+  .card-head p { margin: 4px 0 0; font-size: 0.82rem; color: var(--ink-soft); }
+
+  .sec-badge {
+    font-size: 0.7rem; font-weight: 700; color: var(--ink-faint); background: var(--surface-alt);
+    border-radius: 999px; padding: 2px 9px; white-space: nowrap; flex-shrink: 0;
+  }
+  .sec-badge.filled { color: var(--good); background: var(--good-bg); }
+
+  textarea.sec-input {
+    width: 100%; min-height: 100px; resize: vertical; border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 14px; font-family: inherit; font-size: 0.9rem;
+    line-height: 1.7; background: var(--surface); color: var(--ink);
+  }
+  textarea.sec-input:focus { outline: none; box-shadow: 0 0 0 2px var(--accent); }
+  textarea.sec-input::placeholder { color: var(--ink-faint); }
+
+  .sec-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .btn-ghost {
+    border: 1px solid var(--line); background: var(--surface); color: var(--accent-strong);
+    font-size: 0.78rem; font-weight: 700; padding: 7px 12px; border-radius: 8px;
+    cursor: pointer; font-family: inherit;
+  }
+  .btn-ghost:hover { background: var(--accent-soft-bg); border-color: var(--accent); }
+  .btn-ghost.copied { background: var(--good-bg); color: var(--good); border-color: transparent; }
+
+  .prompt-box {
+    display: none;
+    margin-top: 10px;
+    background: var(--surface-alt);
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .prompt-box.open { display: block; }
+  .prompt-box strong { color: var(--ink); }
+
+  .footer-actions {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;
+  }
+  .btn-primary {
+    border: none; background: var(--accent); color: #fff; font-size: 0.88rem; font-weight: 700;
+    padding: 11px 20px; border-radius: 10px; cursor: pointer; font-family: inherit;
+  }
+  .btn-primary:hover { background: var(--accent-strong); }
+  .btn-primary.copied { background: var(--good); }
+
+  .note {
+    font-size: 0.82rem; color: var(--ink-soft); background: var(--surface-alt);
+    border: 1px dashed var(--line); border-radius: 10px; padding: 14px 16px; margin-top: 18px;
+  }
+  .note strong { color: var(--ink); }
+
+  footer { text-align: center; font-size: 0.76rem; color: var(--ink-faint); margin-top: 30px; }
+
+  /* ── 도구 구획 ── */
+  .tool-block { margin-bottom: 40px; }
+  .tool-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .tool-head .tool-num {
+    font-size: 0.76rem; font-weight: 800; color: #fff; background: var(--accent);
+    border-radius: 999px; width: 22px; height: 22px; display: inline-flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .tool-head h2.tool-title { font-size: 1.2rem; font-weight: 800; margin: 0; }
+  .tool-sub { font-size: 0.85rem; color: var(--ink-soft); margin: 0 0 16px; }
+
+  /* ── 자료정리함 표 ── */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+  table.asset-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; min-width: 680px; }
+  table.asset-table th, table.asset-table td {
+    border-bottom: 1px solid var(--line); padding: 10px 11px; text-align: left; vertical-align: top;
+  }
+  table.asset-table tr:last-child td { border-bottom: none; }
+  table.asset-table th { background: var(--surface-alt); color: var(--ink-soft); font-weight: 600; font-size: 0.76rem; }
+  table.asset-table td[contenteditable="true"] { outline: none; border-radius: 4px; min-width: 60px; }
+  table.asset-table td[contenteditable="true"]:focus {
+    background: var(--accent-soft-bg); box-shadow: 0 0 0 2px var(--accent) inset;
+  }
+  table.asset-table td[contenteditable="true"]:empty::before { content: attr(data-placeholder); color: var(--ink-faint); }
+
+  select.asset-select {
+    appearance: none; border: 1px solid var(--line); border-radius: 999px;
+    padding: 4px 24px 4px 10px; font-size: 0.76rem; font-weight: 700; cursor: pointer;
+    background-repeat: no-repeat; background-position: right 7px center; background-size: 9px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234B5D63' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+  select.status-select.st-요청중 { color: #B65C1F; background-color: #F6E7DA; border-color: transparent; }
+  select.status-select.st-수령완료 { color: var(--good); background-color: var(--good-bg); border-color: transparent; }
+  select.status-select.st-해당없음 { color: var(--ink-faint); background-color: var(--surface-alt); border-color: transparent; }
+
+  .link-cell { display: flex; align-items: center; gap: 6px; }
+  .link-cell .a-link { flex: 1; min-width: 50px; outline: none; border-radius: 4px; word-break: break-all; }
+  .link-cell .a-link:focus { background: var(--accent-soft-bg); box-shadow: 0 0 0 2px var(--accent) inset; }
+  .link-cell .a-link:empty::before { content: attr(data-placeholder); color: var(--ink-faint); }
+  .open-link-btn {
+    flex-shrink: 0; border: 1px solid var(--line); background: var(--surface); color: var(--accent-strong);
+    font-size: 0.7rem; font-weight: 700; border-radius: 6px; padding: 3px 7px; cursor: pointer;
+    text-decoration: none; white-space: nowrap;
+  }
+  .open-link-btn:hover { background: var(--accent-soft-bg); }
+  .open-link-btn[aria-disabled="true"] { color: var(--ink-faint); cursor: default; pointer-events: none; }
+
+  .row-actions { text-align: center; width: 36px; }
+  .icon-btn {
+    border: none; background: transparent; color: var(--ink-faint); cursor: pointer;
+    font-size: 0.92rem; line-height: 1; padding: 5px; border-radius: 6px;
+  }
+  .icon-btn:hover { color: #B23B3B; background: #F6E3E3; }
+
+  .btn-add-asset {
+    border: none; background: var(--accent); color: #fff; border-radius: 8px; padding: 9px 16px;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-top: 12px; font-family: inherit;
+  }
+  .btn-add-asset:hover { background: var(--accent-strong); }
+
+  .status-summary { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .status-summary .chip {
+    font-size: 0.76rem; font-weight: 700; border-radius: 999px; padding: 4px 11px;
+  }
+  .status-summary .chip.wait { color: #B65C1F; background: #F6E7DA; }
+  .status-summary .chip.done { color: var(--good); background: var(--good-bg); }
+
+  /* ── AI 프롬프트 라이브러리 ── */
+  .prompt-search {
+    width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px;
+    font-family: inherit; font-size: 0.9rem; background: var(--surface); color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .prompt-search:focus { outline: none; box-shadow: 0 0 0 2px var(--accent); }
+  .prompt-search::placeholder { color: var(--ink-faint); }
+
+  .prompt-cat { margin-bottom: 22px; }
+  .prompt-cat:last-child { margin-bottom: 0; }
+  .prompt-cat h3 {
+    font-size: 0.82rem; font-weight: 700; color: var(--ink-soft); letter-spacing: 0.02em;
+    margin: 0 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line);
+  }
+  .prompt-grid { display: grid; gap: 10px; }
+  .prompt-item {
+    background: var(--surface-alt); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px;
+  }
+  .prompt-item .p-title { font-size: 0.92rem; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+  .prompt-item .p-desc { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 8px; }
+  .prompt-item .p-text {
+    font-size: 0.83rem; color: var(--ink-soft); line-height: 1.65; white-space: pre-wrap;
+    background: var(--surface); border: 1px dashed var(--line); border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 8px;
+  }
+  .prompt-item .p-text mark {
+    background: var(--accent-soft-bg); color: var(--accent-strong); border-radius: 3px;
+    padding: 0 2px; font-weight: 600;
+  }
+  .no-results { font-size: 0.86rem; color: var(--ink-faint); padding: 20px 4px; text-align: center; }
+
+  @media (max-width: 480px) {
+    body { padding: 24px 12px 60px; }
+    section.card { padding: 16px 16px 14px; }
+    h1 { font-size: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brandmark">
+    <svg class="mark-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="11" fill="url(#markGrad3)"/>
+      <path d="M7.2 12.3l3 3 6.6-6.6" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs>
+        <linearGradient id="markGrad3" x1="1" y1="12" x2="23" y2="12" gradientUnits="userSpaceOnUse">
+          <stop stop-color="var(--brand-blue)"/><stop offset="1" stop-color="var(--brand-teal)"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <span class="wordmark"><span class="w-medi">Medi</span><span class="w-mark">mark</span></span>
+  </div>
+  <div class="eyebrow">채널 운영 지원 도구</div>
+  <h1>자료정리함 &amp; AI 프롬프트 템플릿</h1>
+
+  <div class="badges">
+    <span class="badge"><span>●</span>완전 무료 구조</span>
+    <span class="badge dim">유료 API 미사용 · 무료 채팅으로 초안 작성</span>
+    <span class="badge dim">이 브라우저에만 저장</span>
+  </div>
+
+  <!-- 도구 1: 자료정리함 -->
+  <div class="tool-block">
+    <div class="tool-head"><span class="tool-num">1</span><h2 class="tool-title">자료정리함</h2></div>
+    <p class="tool-sub">로고·사진·브랜드 자료가 어디에 있는지, 받았는지 못 받았는지 한 곳에서 관리합니다. 파일 자체는 저장하지 않고 링크(구글드라이브 등)만 기록합니다.</p>
+
+    <div class="status-summary">
+      <span class="chip wait" id="assetWaitChip">요청중 0건</span>
+      <span class="chip done" id="assetDoneChip">수령완료 0건</span>
+    </div>
+
+    <div class="table-scroll">
+      <table class="asset-table" id="assetTable">
+        <thead>
+          <tr>
+            <th style="width:170px;">자료명</th>
+            <th style="width:110px;">유형</th>
+            <th>링크 / 위치</th>
+            <th style="width:118px;">상태</th>
+            <th style="width:110px;">비고</th>
+            <th class="row-actions"></th>
+          </tr>
+        </thead>
+        <tbody id="assetBody"></tbody>
+      </table>
+    </div>
+    <button class="btn-add-asset" id="addAssetBtn">+ 자료 추가</button>
+  </div>
+
+  <!-- 도구 2: AI 프롬프트 템플릿 모음 -->
+  <div class="tool-block">
+    <div class="tool-head"><span class="tool-num">2</span><h2 class="tool-title">AI 프롬프트 템플릿 모음</h2></div>
+    <p class="tool-sub">자주 쓰는 채널 운영 업무별 프롬프트입니다. [ ] 부분만 채워서 무료 채팅에 붙여넣으세요. (AI 활용도: 대화·기획서 작성 수준)</p>
+
+    <input class="prompt-search" id="promptSearch" type="text" placeholder="🔍 프롬프트 검색 (예: 인스타그램, 요약, 이메일...)">
+    <div id="promptArea"></div>
+  </div>
+
+  <footer>모든 내용은 이 브라우저에만 저장됩니다 · 서버 전송 없음 · GPT-5.5 등 유료 API 호출 없음</footer>
+</div>
+
+<script>
+(function () {
+  function copyText(text, btn) {
+    var original = btn.innerHTML;
+    function showCopied() {
+      btn.textContent = '✓ 복사됨';
+      btn.classList.add('copied');
+      setTimeout(function () { btn.innerHTML = original; btn.classList.remove('copied'); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showCopied, function () { fallback(); });
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      showCopied();
+    }
+  }
+
+  /* =====================================================
+     도구 1: 자료정리함
+     ===================================================== */
+  var ASSET_KEY = 'medimark_assets_v1';
+  var typeOptions = ['로고', '사진', '브랜드가이드', '문서', '홍보문구', '기타'];
+  var statusOptions = ['요청중', '수령완료', '해당없음'];
+
+  var defaultAssets = [
+    { name: '로고 파일 (고해상도)', type: '로고', link: '', status: '요청중', note: '' },
+    { name: '브랜드 컬러 · 폰트 가이드', type: '브랜드가이드', link: '', status: '요청중', note: '' },
+    { name: '시설 · 진료진 사진', type: '사진', link: '', status: '요청중', note: '' },
+    { name: '기존 SNS · 블로그 계정 정보', type: '문서', link: '', status: '요청중', note: '' },
+    { name: '기존 홍보 문구 · 슬로건', type: '홍보문구', link: '', status: '요청중', note: '' },
+    { name: '의료광고 심의 사내 지침', type: '문서', link: '', status: '요청중', note: '' },
+    { name: '인스타그램 비즈니스 계정 정보', type: '문서', link: '', status: '요청중', note: '' },
+    { name: '메타 비즈니스 매니저 권한', type: '문서', link: '', status: '요청중', note: '' }
+  ];
+
+  function loadAssets() {
+    try {
+      var raw = localStorage.getItem(ASSET_KEY);
+      return raw ? JSON.parse(raw) : defaultAssets.slice();
+    } catch (e) { return defaultAssets.slice(); }
+  }
+  function saveAssets(rows) { localStorage.setItem(ASSET_KEY, JSON.stringify(rows)); }
+
+  function isLikelyUrl(text) { return /^https?:\/\/\S+/i.test(text.trim()); }
+
+  function selectOptionsHtml(options, cls) {
+    return options.map(function (o) { return '<option value="' + o + '">' + o + '</option>'; }).join('');
+  }
+
+  function readAssetRowsFromDOM() {
+    var rows = [];
+    document.querySelectorAll('#assetBody tr').forEach(function (tr) {
+      rows.push({
+        name: tr.querySelector('.a-name').innerText.trim(),
+        type: tr.querySelector('.a-type').value,
+        link: tr.querySelector('.a-link').innerText.trim(),
+        status: tr.querySelector('.a-status').value,
+        note: tr.querySelector('.a-note').innerText.trim()
+      });
+    });
+    return rows;
+  }
+
+  function updateAssetSummary(rows) {
+    var wait = rows.filter(function (r) { return r.status === '요청중'; }).length;
+    var done = rows.filter(function (r) { return r.status === '수령완료'; }).length;
+    document.getElementById('assetWaitChip').textContent = '요청중 ' + wait + '건';
+    document.getElementById('assetDoneChip').textContent = '수령완료 ' + done + '건';
+  }
+
+  function applyStatusClass(select) {
+    select.classList.remove('st-요청중', 'st-수령완료', 'st-해당없음');
+    select.classList.add('st-' + select.value);
+  }
+
+  function refreshOpenBtn(tr) {
+    var url = tr.querySelector('.a-link').innerText.trim();
+    var btn = tr.querySelector('.open-link-btn');
+    if (isLikelyUrl(url)) {
+      btn.href = url; btn.removeAttribute('aria-disabled'); btn.textContent = '열기 ↗';
+    } else {
+      btn.removeAttribute('href'); btn.setAttribute('aria-disabled', 'true'); btn.textContent = '링크 없음';
+    }
+  }
+
+  function persistAssets() {
+    var rows = readAssetRowsFromDOM();
+    saveAssets(rows);
+    updateAssetSummary(rows);
+  }
+
+  function renderAssets(rows) {
+    var body = document.getElementById('assetBody');
+    body.innerHTML = '';
+    rows.forEach(function (row) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="a-name" contenteditable="true" data-placeholder="자료명"></td>' +
+        '<td><select class="asset-select a-type">' + selectOptionsHtml(typeOptions) + '</select></td>' +
+        '<td><div class="link-cell"><div class="a-link" contenteditable="true" data-placeholder="https://..."></div><a class="open-link-btn" target="_blank" rel="noopener noreferrer">링크 없음</a></div></td>' +
+        '<td><select class="asset-select status-select a-status">' + selectOptionsHtml(statusOptions) + '</select></td>' +
+        '<td class="a-note" contenteditable="true" data-placeholder="비고"></td>' +
+        '<td class="row-actions"><button class="icon-btn" title="삭제" aria-label="삭제">✕</button></td>';
+
+      tr.querySelector('.a-name').innerText = row.name || '';
+      tr.querySelector('.a-type').value = row.type || '기타';
+      tr.querySelector('.a-link').innerText = row.link || '';
+      tr.querySelector('.a-note').innerText = row.note || '';
+      var statusSel = tr.querySelector('.a-status');
+      statusSel.value = row.status || '요청중';
+      applyStatusClass(statusSel);
+      refreshOpenBtn(tr);
+
+      tr.querySelectorAll('.a-name, .a-note').forEach(function (cell) {
+        cell.addEventListener('input', persistAssets);
+      });
+      tr.querySelector('.a-link').addEventListener('input', function () {
+        refreshOpenBtn(tr);
+        persistAssets();
+      });
+      tr.querySelector('.a-type').addEventListener('change', persistAssets);
+      statusSel.addEventListener('change', function () {
+        applyStatusClass(statusSel);
+        persistAssets();
+      });
+      tr.querySelector('.icon-btn').addEventListener('click', function () {
+        tr.remove();
+        persistAssets();
+      });
+
+      body.appendChild(tr);
+    });
+    updateAssetSummary(rows);
+  }
+
+  document.getElementById('addAssetBtn').addEventListener('click', function () {
+    var rows = readAssetRowsFromDOM();
+    rows.push({ name: '', type: '기타', link: '', status: '요청중', note: '' });
+    renderAssets(rows);
+    saveAssets(rows);
+  });
+
+  renderAssets(loadAssets());
+
+  /* =====================================================
+     도구 3: AI 프롬프트 템플릿 모음
+     ===================================================== */
+  var promptCategories = [
+    {
+      cat: '메디마크 서비스별 콘텐츠 (공식 자료 반영)',
+      items: [
+        {
+          title: '의료분쟁 컨설팅 콘텐츠 초안',
+          desc: '의료수사 전문 강윤석(경찰 최초 의료수사관 인증 1호) 사례·인터뷰 콘텐츠용',
+          text: '메디마크의 의료분쟁 컨설팅 서비스 관련 콘텐츠를 써줘. 의료수사 전문 강윤석(경찰 최초 의료수사관 인증 1호)의 관점을 참고 인물로 활용해도 좋아. 신뢰감 있는 톤으로, 과장·자극적인 표현은 피해줘.\n\n채널: [유튜브/블로그/SNS]\n주제: [주제]'
+        },
+        {
+          title: 'TCI&심리상담 콘텐츠 초안',
+          desc: '정신과 이안백, 소아정신과 김소연 — 기질성격검사(TCI) 관련 콘텐츠용',
+          text: '메디마크의 TCI&심리상담 서비스 관련 콘텐츠를 써줘. 정신과 이안백, 소아정신과 김소연의 전문성을 참고해서 신뢰감 있는 톤으로 작성해줘. 과장·자극적인 표현은 피해줘.\n\n채널: [유튜브/블로그/SNS]\n주제: [주제, 예: TCI 기질성격검사 소개]'
+        },
+        {
+          title: '신간 도서 소개 콘텐츠 초안',
+          desc: '「의료사고, 진실을 찾아서」(강윤석) · 「우리 아이 마음 지도, TCI로 읽다」(이안백) 등',
+          text: '다음 메디마크 출간 도서를 소개하는 콘텐츠를 써줘. 책의 핵심 메시지를 짚어주고, 관련 서비스(의료분쟁 컨설팅 또는 TCI&심리상담) 신청으로 자연스럽게 연결되게 마무리해줘.\n\n도서명: [예: 「우리 아이 마음 지도, TCI로 읽다」]\n저자: [예: 이안백]\n채널: [유튜브/블로그/SNS]'
+        }
+      ]
+    },
+    {
+      cat: '유튜브 · 영상 콘텐츠',
+      items: [
+        {
+          title: '유튜브 영상 제목·설명 만들기',
+          desc: '클릭을 부르되 과장되지 않은 제목',
+          text: '다음 영상 내용을 바탕으로 유튜브 제목 후보 3개와 설명란 문구를 써줘. 흥미를 끌되 과장·자극적인 표현은 피해줘.\n\n영상 주제: [주제]\n핵심 내용: [핵심 내용]'
+        },
+        {
+          title: '영상 스크립트 개요 짜기',
+          desc: '도입 · 본론 · 마무리 구성',
+          text: '다음 주제로 영상 스크립트 개요를 만들어줘. 도입(후킹) · 본론 3~4개 포인트 · 마무리로 구성해줘.\n\n주제: [주제]\n영상 길이: [예: 5분]'
+        }
+      ]
+    },
+    {
+      cat: 'SNS 홍보문구',
+      items: [
+        {
+          title: '인스타그램 캡션 만들기',
+          desc: '친근한 톤 + 해시태그 포함',
+          text: '다음 내용을 인스타그램 게시물 캡션으로 써줘. 친근한 톤, 해시태그 5개 포함, 3~4문장 이내로.\n\n주제: [주제]\n핵심 메시지: [핵심 메시지]'
+        },
+        {
+          title: '블로그 포스팅 개요 짜기',
+          desc: '소제목 4~5개 목차 구성',
+          text: '다음 주제로 블로그 포스팅 개요(목차)를 만들어줘. 신뢰감 있는 톤으로, 소제목 4~5개로 구성해줘.\n\n주제: [주제]'
+        },
+        {
+          title: '이벤트 공지문 작성',
+          desc: '일정 · 대상 · 참여방법이 명확하게',
+          text: '다음 이벤트를 안내하는 공지문을 써줘. 신뢰감 있는 톤으로, 일정/대상/참여 방법이 명확히 드러나게 써줘.\n\n이벤트명: [이벤트명]\n일정: [일정]\n대상: [대상]'
+        }
+      ]
+    },
+    {
+      cat: '자료정리 · 요약',
+      items: [
+        {
+          title: '긴 문서 요약하기',
+          desc: '핵심 포인트 5개로 정리',
+          text: '다음 내용을 핵심 포인트 5개로 요약해줘.\n\n[문서 내용 붙여넣기]'
+        },
+        {
+          title: '회의록 정리하기',
+          desc: '메모를 논의사항 · 결정사항 · 액션아이템으로 정리',
+          text: '다음은 미팅 중 받아 적은 메모야. 이걸 보기 좋은 회의록 형식(논의사항 / 결정사항 / 액션아이템)으로 정리해줘.\n\n[메모 붙여넣기]'
+        }
+      ]
+    },
+    {
+      cat: '이메일 · 커뮤니케이션',
+      items: [
+        {
+          title: '안내 메일 초안',
+          desc: '정중한 안내 이메일 작성',
+          text: '다음 내용을 담은 정중한 안내 이메일을 써줘.\n\n받는 사람: [받는 사람]\n전달할 내용: [내용]'
+        },
+        {
+          title: '문의 회신 초안',
+          desc: '받은 문의에 대한 답장 작성',
+          text: '다음 문의에 대한 답장을 정중하고 명확하게 써줘.\n\n받은 문의 내용: [문의 내용]\n답변 방향: [답변 방향]'
+        }
+      ]
+    },
+    {
+      cat: '콘텐츠 표현 검토',
+      items: [
+        {
+          title: '민감 표현 점검',
+          desc: '의료사고·사건 콘텐츠 특성상 명예훼손·과장 표현 검토 (최종 확인은 반드시 사람이)',
+          text: '다음 콘텐츠 문구에 명예훼손 소지, 지나치게 자극적이거나 과장된 표현, 의료사고 관련 법적으로 민감할 수 있는 표현이 있는지 검토해줘. 문제가 될 수 있는 부분을 짚어주고, 대안 표현을 제안해줘.\n\n[문구 붙여넣기]'
+        }
+      ]
+    }
+  ];
+
+  var promptArea = document.getElementById('promptArea');
+  var promptSearch = document.getElementById('promptSearch');
+
+  function highlightBrackets(text) {
+    var escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return escaped.replace(/(\[[^\]]*\])/g, '<mark>$1</mark>');
+  }
+
+  function renderPrompts(filterText) {
+    var q = (filterText || '').trim().toLowerCase();
+    promptArea.innerHTML = '';
+    var anyMatch = false;
+
+    promptCategories.forEach(function (cat) {
+      var matched = cat.items.filter(function (item) {
+        if (!q) return true;
+        return (cat.cat + ' ' + item.title + ' ' + item.desc + ' ' + item.text).toLowerCase().indexOf(q) !== -1;
+      });
+      if (matched.length === 0) return;
+      anyMatch = true;
+
+      var catEl = document.createElement('div');
+      catEl.className = 'prompt-cat';
+      var h3 = document.createElement('h3');
+      h3.textContent = cat.cat;
+      catEl.appendChild(h3);
+
+      var grid = document.createElement('div');
+      grid.className = 'prompt-grid';
+
+      matched.forEach(function (item) {
+        var card = document.createElement('div');
+        card.className = 'prompt-item';
+        card.innerHTML =
+          '<div class="p-title">' + item.title + '</div>' +
+          '<div class="p-desc">' + item.desc + '</div>' +
+          '<div class="p-text">' + highlightBrackets(item.text) + '</div>' +
+          '<button class="btn-ghost" data-text="copy">📋 프롬프트 복사</button>';
+
+        card.querySelector('[data-text="copy"]').addEventListener('click', function () {
+          copyText(item.text, this);
+        });
+
+        grid.appendChild(card);
+      });
+
+      catEl.appendChild(grid);
+      promptArea.appendChild(catEl);
+    });
+
+    if (!anyMatch) {
+      var empty = document.createElement('div');
+      empty.className = 'no-results';
+      empty.textContent = '일치하는 프롬프트가 없습니다.';
+      promptArea.appendChild(empty);
+    }
+  }
+
+  promptSearch.addEventListener('input', function () { renderPrompts(promptSearch.value); });
+  renderPrompts('');
+})();
+</script>
+</body>
+</html>

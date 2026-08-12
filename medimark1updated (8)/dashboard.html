@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메디마크 온라인 마케팅 생성체계 구축 및 보유채널 운영기술 지원 대시보드</title>
+<style>
+  :root {
+    --bg: #F3F6F6;
+    --surface: #FFFFFF;
+    --surface-alt: #EAF0F0;
+    --ink: #17242A;
+    --ink-soft: #4B5D63;
+    --ink-faint: #7C8D92;
+    --accent: #0E8F82;
+    --accent-strong: #0A6E63;
+    --accent-soft-bg: #E1F4F0;
+    --line: #D7E1E1;
+    --warn: #B65C1F;
+    --warn-bg: #F6E7DA;
+    --good: #2E7D46;
+    --good-bg: #DFF0E2;
+    --pending: #8A6D1B;
+    --pending-bg: #F2ECD6;
+    --shadow: 0 1px 2px rgba(15, 40, 43, 0.06), 0 6px 20px rgba(15, 40, 43, 0.06);
+    /* 메디마크 로고 브랜드 컬러 (워드마크 재현용) */
+    --brand-blue: #12AEDD;
+    --brand-teal: #00C08B;
+    --brand-gray: #8A8F93;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0E1416;
+    --surface: #161F22;
+    --surface-alt: #1D2A2D;
+    --ink: #E4EDEE;
+    --ink-soft: #9FB4B8;
+    --ink-faint: #6F868A;
+    --accent: #3FCDBB;
+    --accent-strong: #7DE4D5;
+    --accent-soft-bg: #143732;
+    --line: #2A3A3D;
+    --warn: #E0954D;
+    --warn-bg: #3A2A1B;
+    --good: #5FBD7A;
+    --good-bg: #1C3324;
+    --pending: #D8C56A;
+    --pending-bg: #332C15;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --brand-blue: #4FC4EA;
+    --brand-teal: #2FE0AA;
+    --brand-gray: #9AA0A4;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1416;
+      --surface: #161F22;
+      --surface-alt: #1D2A2D;
+      --ink: #E4EDEE;
+      --ink-soft: #9FB4B8;
+      --ink-faint: #6F868A;
+      --accent: #3FCDBB;
+      --accent-strong: #7DE4D5;
+      --accent-soft-bg: #143732;
+      --line: #2A3A3D;
+      --warn: #E0954D;
+      --warn-bg: #3A2A1B;
+      --good: #5FBD7A;
+      --good-bg: #1C3324;
+      --pending: #D8C56A;
+      --pending-bg: #332C15;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+      --brand-blue: #4FC4EA;
+      --brand-teal: #2FE0AA;
+      --brand-gray: #9AA0A4;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Pretendard', '맑은 고딕', 'Malgun Gothic', -apple-system, sans-serif;
+    line-height: 1.6;
+    padding: 40px 20px 80px;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  /* ── 상단 ── */
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  /* ── 브랜드 워드마크 ── */
+  .brandmark {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .brandmark .mark-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .brandmark .wordmark {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+  .brandmark .w-medi {
+    background: linear-gradient(100deg, var(--brand-blue), var(--brand-teal));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .brandmark .w-mark {
+    color: var(--brand-gray);
+    font-weight: 700;
+  }
+
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    margin: 4px 0 14px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 34px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+    background: var(--accent-soft-bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+  }
+
+  .badge.dim {
+    color: var(--ink-soft);
+    background: var(--surface-alt);
+  }
+
+  .badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ── 카드 ── */
+  section.card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 26px 26px 24px;
+    margin-bottom: 22px;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .card-head h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+
+  .card-head p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  .progress-chip {
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-strong);
+    background: var(--accent-soft-bg);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* ── 캘린더 표 ── */
+  .table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 560px; }
+
+  th, td {
+    border-bottom: 1px solid var(--line);
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  th {
+    background: var(--surface-alt);
+    color: var(--ink-soft);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+  }
+
+  td.date-cell {
+    font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  td[contenteditable="true"] {
+    outline: none;
+    min-width: 70px;
+    border-radius: 4px;
+  }
+
+  td[contenteditable="true"]:focus {
+    background: var(--accent-soft-bg);
+    box-shadow: 0 0 0 2px var(--accent) inset;
+  }
+
+  td[contenteditable="true"]:empty::before {
+    content: attr(data-placeholder);
+    color: var(--ink-faint);
+  }
+
+  select.status {
+    appearance: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 26px 4px 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234B5D63' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+
+  select.status.st-예정 { color: var(--pending); background-color: var(--pending-bg); border-color: transparent; }
+  select.status.st-진행중 { color: var(--accent-strong); background-color: var(--accent-soft-bg); border-color: transparent; }
+  select.status.st-완료 { color: var(--good); background-color: var(--good-bg); border-color: transparent; }
+
+  select.status.svc-의료분쟁 { color: #2B5FA6; background-color: #E3ECFA; border-color: transparent; }
+  select.status.svc-TCI심리상담 { color: var(--accent-strong); background-color: var(--accent-soft-bg); border-color: transparent; }
+  select.status.svc-도서출판 { color: #8A5FB8; background-color: #EDE3F6; border-color: transparent; }
+  select.status.svc-공통 { color: var(--ink-soft); background-color: var(--surface-alt); border-color: transparent; }
+
+  select.status.sp-접수 { color: var(--pending); background-color: var(--pending-bg); border-color: transparent; }
+  select.status.sp-처리중 { color: var(--accent-strong); background-color: var(--accent-soft-bg); border-color: transparent; }
+  select.status.sp-완료 { color: var(--good); background-color: var(--good-bg); border-color: transparent; }
+
+  .row-actions { text-align: center; width: 44px; }
+
+  .icon-btn {
+    border: none;
+    background: transparent;
+    color: var(--ink-faint);
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1;
+    padding: 6px;
+    border-radius: 6px;
+  }
+
+  .icon-btn:hover { color: var(--warn); background: var(--warn-bg); }
+  .icon-btn:focus-visible, .btn:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .btn-add {
+    background: var(--accent);
+    color: #fff;
+    margin-top: 14px;
+  }
+
+  .btn-add:hover { background: var(--accent-strong); }
+
+  /* ── 체크리스트 ── */
+  .checklist-group { margin-bottom: 20px; }
+  .checklist-group:last-child { margin-bottom: 0; }
+
+  .checklist-group h3 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+
+  .checklist-item:hover { background: var(--surface-alt); }
+
+  .checklist-item input {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .checklist-item span.done {
+    color: var(--ink-faint);
+    text-decoration: line-through;
+  }
+
+  /* ── 실적 기록 표 ── */
+  input.num-cell {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.86rem;
+    color: var(--ink);
+    padding: 4px 2px;
+    border-radius: 4px;
+  }
+
+  input.num-cell:focus {
+    outline: none;
+    background: var(--accent-soft-bg);
+    box-shadow: 0 0 0 2px var(--accent) inset;
+  }
+
+  tr.totals-row td {
+    background: var(--surface-alt);
+    font-weight: 700;
+    color: var(--ink);
+    border-bottom: none;
+  }
+
+  tr.totals-row .totals-label {
+    color: var(--ink-soft);
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  /* ── 채널 링크 모음 ── */
+  td.link-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  td.link-cell .l-url {
+    flex: 1;
+    min-width: 60px;
+    outline: none;
+    border-radius: 4px;
+    word-break: break-all;
+  }
+
+  td.link-cell .l-url:focus {
+    background: var(--accent-soft-bg);
+    box-shadow: 0 0 0 2px var(--accent) inset;
+  }
+
+  td.link-cell .l-url:empty::before {
+    content: attr(data-placeholder);
+    color: var(--ink-faint);
+  }
+
+  .open-link-btn {
+    flex-shrink: 0;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--accent-strong);
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 3px 8px;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .open-link-btn:hover { background: var(--accent-soft-bg); }
+  .open-link-btn[aria-disabled="true"] {
+    color: var(--ink-faint);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* ── 사용자 식별 (이름표, 보안 아님) ── */
+  .id-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+
+  .id-card .id-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .id-card .id-note {
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+
+  .id-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .id-form input {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  .id-form input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .id-form input#idEmployeeNo { width: 120px; }
+  .id-form input#idName { width: 110px; }
+
+  .btn-id {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .btn-id:hover { background: var(--accent-strong); }
+
+  .id-chip-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .id-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.86rem;
+    color: var(--ink);
+  }
+
+  .id-chip .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(100deg, var(--brand-blue), var(--brand-teal));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .id-chip .id-meta { line-height: 1.35; }
+  .id-chip .id-meta .name { font-weight: 700; }
+  .id-chip .id-meta .empno {
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  }
+
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--accent-strong);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 2px;
+  }
+
+  .link-btn:hover { text-decoration: underline; }
+
+  td.assignee-cell {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  /* ── 완성 안내 ── */
+  .done-note {
+    font-size: 0.85rem;
+    color: var(--accent-strong);
+    background: var(--accent-soft-bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-top: 4px;
+  }
+
+  .done-note strong { color: var(--ink); }
+  .done-note ul { margin: 8px 0 0; padding-left: 20px; }
+  .done-note li { margin-bottom: 3px; }
+
+  /* ── 안내 / 다음 단계 ── */
+  .note {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    background: var(--surface-alt);
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 4px;
+  }
+
+  .note strong { color: var(--ink); }
+
+  footer {
+    text-align: center;
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    margin-top: 34px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    section.card { transition: box-shadow 0.15s ease; }
+  }
+
+  /* ── 모바일 다듬기 ── */
+  @media (max-width: 480px) {
+    body { padding: 24px 12px 60px; }
+    section.card { padding: 18px 16px 16px; border-radius: 12px; }
+    h1 { font-size: 1.28rem; margin-bottom: 10px; }
+    .brandmark .wordmark { font-size: 1.2rem; }
+    .badges { margin-bottom: 22px; }
+    .badge { font-size: 0.72rem; padding: 4px 10px; }
+    .card-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .card-head h2 { font-size: 0.98rem; }
+    table { font-size: 0.82rem; }
+    th, td { padding: 8px 9px; }
+    .id-form { flex-direction: column; align-items: stretch; }
+    .id-form input { width: 100% !important; }
+    .btn-id { width: 100%; }
+    .id-chip-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="brandmark">
+        <svg class="mark-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="11" fill="url(#markGrad)"/>
+          <path d="M7.2 12.3l3 3 6.6-6.6" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="markGrad" x1="1" y1="12" x2="23" y2="12" gradientUnits="userSpaceOnUse">
+              <stop stop-color="var(--brand-blue)"/>
+              <stop offset="1" stop-color="var(--brand-teal)"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="wordmark"><span class="w-medi">Medi</span><span class="w-mark">mark</span></span>
+      </div>
+      <div class="eyebrow">온라인마케팅 새 체계 · 킥오프 데모앱</div>
+      <h1>온라인 마케팅 생성체계 구축 및 보유채널 운영기술 지원 대시보드</h1>
+    </div>
+  </div>
+
+  <div class="badges">
+    <span class="badge"><span class="dot"></span>완전 무료 구조</span>
+    <span class="badge dim">유료 API 미사용</span>
+    <span class="badge dim">이 브라우저에만 저장 (localStorage)</span>
+  </div>
+
+  <!-- 사용자 식별 (이름표 — 보안 로그인이 아님) -->
+  <div class="id-card" id="idCard"></div>
+
+  <!-- 콘텐츠 캘린더 -->
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>콘텐츠 캘린더</h2>
+        <p>무엇을 · 언제 · 어느 채널에 올릴지 한 곳에서 관리합니다.</p>
+      </div>
+      <div class="progress-chip" id="calProgress">0건</div>
+    </div>
+
+    <div class="table-scroll">
+      <table id="calendarTable">
+        <thead>
+          <tr>
+            <th style="width:100px;">날짜</th>
+            <th style="width:100px;">채널</th>
+            <th style="width:96px;">서비스</th>
+            <th>주제</th>
+            <th style="width:92px;">상태</th>
+            <th style="width:80px;">담당자</th>
+            <th class="row-actions"></th>
+          </tr>
+        </thead>
+        <tbody id="calendarBody"></tbody>
+      </table>
+    </div>
+    <button class="btn btn-add" id="addRowBtn">+ 항목 추가</button>
+  </section>
+
+  <!-- 발행 전 체크리스트 -->
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>발행 전 체크리스트</h2>
+        <p>올리기 전 마지막으로 확인하는 항목입니다.</p>
+      </div>
+      <div class="progress-chip" id="chkProgress">0/0</div>
+    </div>
+    <div id="checklistArea"></div>
+  </section>
+
+  <!-- 실적 기록 -->
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>실적 기록</h2>
+        <p>올린 콘텐츠의 조회수 · 상담 신청 전환을 수동으로 기록합니다. (연동 없이 직접 입력)</p>
+      </div>
+      <div class="progress-chip" id="perfProgress">0건</div>
+    </div>
+
+    <div class="table-scroll">
+      <table id="perfTable">
+        <thead>
+          <tr>
+            <th style="width:112px;">날짜</th>
+            <th style="width:120px;">채널</th>
+            <th>콘텐츠</th>
+            <th style="width:90px;">조회수</th>
+            <th style="width:96px;">상담신청</th>
+            <th class="row-actions"></th>
+          </tr>
+        </thead>
+        <tbody id="perfBody"></tbody>
+        <tfoot>
+          <tr class="totals-row">
+            <td colspan="3" class="totals-label">합계</td>
+            <td id="perfViewTotal">0</td>
+            <td id="perfInquiryTotal">0</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <button class="btn btn-add" id="addPerfRowBtn">+ 항목 추가</button>
+  </section>
+
+  <!-- 채널 링크 모음 -->
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>채널 링크 모음</h2>
+        <p>운영 중인 무료 채널 주소를 한 곳에 모아둡니다. 실제 주소는 킥오프미팅에서 확인 후 채워 넣으세요.</p>
+      </div>
+      <div class="progress-chip" id="linkProgress">0개</div>
+    </div>
+
+    <div class="table-scroll">
+      <table id="linkTable">
+        <thead>
+          <tr>
+            <th style="width:150px;">채널</th>
+            <th>링크</th>
+            <th style="width:150px;">비고</th>
+            <th class="row-actions"></th>
+          </tr>
+        </thead>
+        <tbody id="linkBody"></tbody>
+      </table>
+    </div>
+    <button class="btn btn-add" id="addLinkRowBtn">+ 채널 추가</button>
+  </section>
+
+  <!-- 채널 운영 기술 지원 -->
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>채널 운영 기술 지원</h2>
+        <p>보유한 사이트·블로그·SNS 등 채널에서 생기는 기술 이슈·요청을 접수하고 처리 상태를 관리합니다.</p>
+      </div>
+      <div class="progress-chip" id="supportProgress">0건</div>
+    </div>
+
+    <div class="table-scroll">
+      <table id="supportTable">
+        <thead>
+          <tr>
+            <th style="width:100px;">날짜</th>
+            <th style="width:110px;">채널</th>
+            <th style="width:112px;">요청 유형</th>
+            <th>내용</th>
+            <th style="width:92px;">상태</th>
+            <th style="width:80px;">담당자</th>
+            <th class="row-actions"></th>
+          </tr>
+        </thead>
+        <tbody id="supportBody"></tbody>
+      </table>
+    </div>
+    <button class="btn btn-add" id="addSupportRowBtn">+ 요청 추가</button>
+  </section>
+
+  <div class="done-note">
+    <strong>데모앱 1~6단계 완료</strong> &mdash; 킥오프미팅에서 그대로 시연할 수 있는 상태입니다.
+    <ul>
+      <li>콘텐츠 캘린더(서비스 구분 포함) · 발행 전 체크리스트 · 실적 기록 · 채널 링크 모음 · 채널 운영 기술 지원 · 사용자 이름표</li>
+      <li>모든 데이터는 이 브라우저에만 저장, 유료 API·서버 없음</li>
+      <li>사원번호/이름은 "누가 등록했는지" 표시용이며, 보안 로그인은 아닙니다</li>
+    </ul>
+    <strong>회사 자료 확인 결과</strong> — (주)메디마크의 공식 핵심 사업은 3가지: ① 의료분쟁 컨설팅
+    ② TCI&amp;심리상담 ③ 의료전문 도서 출판 (「의료사고, 진실을 찾아서」·「우리 아이 마음 지도, TCI로 읽다」 등).
+    이 외에 <strong>TES MIND AI</strong>(AI 기반 디지털 심리상담, 2026.7 사업계획 — 학교 5곳 시범사업 중)와
+    <strong>글로벌 의료관광 유치사업</strong>(global.medimark.co.kr)이 별도로 진행 중이며, 이 두 가지가
+    이번 온라인마케팅 프로젝트 범위에 포함되는지는 킥오프미팅에서 확인이 필요합니다.
+  </div>
+
+  <footer>모든 데이터는 서버로 전송되지 않고 이 브라우저에만 저장됩니다 · GPT-5.5 등 유료 API 호출 없음</footer>
+</div>
+
+<script>
+(function () {
+  var CAL_KEY = 'medimark_calendar_v1';
+  var CHK_KEY = 'medimark_checklist_v1';
+
+  /* ===== 콘텐츠 캘린더 ===== */
+  var serviceOptions = ['의료분쟁', 'TCI심리상담', '도서출판', '공통'];
+
+  var defaultCalendar = [
+    { date: '2026-08-03', channel: '유튜브', service: '의료분쟁', topic: '의료사고 전문가 인터뷰 - 강윤석 팀장 (「의료사고, 진실을 찾아서」 저자)', status: '완료', assignee: '박서연' },
+    { date: '2026-08-05', channel: '블로그', service: '도서출판', topic: '「우리 아이 마음 지도, TCI로 읽다」 도서 소개 (이안백 저)', status: '예정', assignee: '' },
+    { date: '2026-08-07', channel: '인스타그램', service: 'TCI심리상담', topic: 'TCI 기질성격검사 소개 카드뉴스', status: '진행중', assignee: '박서연' },
+    { date: '2026-08-10', channel: '페이스북', service: 'TCI심리상담', topic: '학교 심리검사 시범사업 현장 소식 (파주 산내중학교 등)', status: '예정', assignee: '' },
+    { date: '2026-08-12', channel: '유튜브', service: '공통', topic: '메디마크TV 신규 영상 안내', status: '예정', assignee: '' }
+  ];
+
+  function loadCalendar() {
+    try {
+      var raw = localStorage.getItem(CAL_KEY);
+      return raw ? JSON.parse(raw) : defaultCalendar.slice();
+    } catch (e) { return defaultCalendar.slice(); }
+  }
+
+  function saveCalendar(rows) { localStorage.setItem(CAL_KEY, JSON.stringify(rows)); }
+
+  function readRowsFromDOM() {
+    var rows = [];
+    document.querySelectorAll('#calendarBody tr').forEach(function (tr) {
+      rows.push({
+        date: tr.querySelector('.c-date').innerText.trim(),
+        channel: tr.querySelector('.c-channel').innerText.trim(),
+        service: tr.querySelector('.c-service').value,
+        topic: tr.querySelector('.c-topic').innerText.trim(),
+        status: tr.querySelector('.c-status').value,
+        assignee: tr.querySelector('.c-assignee').innerText.trim()
+      });
+    });
+    return rows;
+  }
+
+  function updateCalProgress(rows) {
+    document.getElementById('calProgress').textContent = rows.length + '건';
+  }
+
+  function applyStatusClass(select) {
+    select.classList.remove('st-예정', 'st-진행중', 'st-완료');
+    select.classList.add('st-' + select.value);
+  }
+
+  function applyServiceClass(select) {
+    select.classList.remove('svc-의료분쟁', 'svc-TCI심리상담', 'svc-도서출판', 'svc-공통');
+    select.classList.add('svc-' + select.value);
+  }
+
+  function serviceOptionsHtml() {
+    return serviceOptions.map(function (s) { return '<option value="' + s + '">' + s + '</option>'; }).join('');
+  }
+
+  function persistCalendar() {
+    var rows = readRowsFromDOM();
+    saveCalendar(rows);
+    updateCalProgress(rows);
+  }
+
+  function renderCalendar(rows) {
+    var body = document.getElementById('calendarBody');
+    body.innerHTML = '';
+    rows.forEach(function (row) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="c-date date-cell" contenteditable="true" data-placeholder="YYYY-MM-DD"></td>' +
+        '<td class="c-channel" contenteditable="true" data-placeholder="채널"></td>' +
+        '<td><select class="status c-service">' + serviceOptionsHtml() + '</select></td>' +
+        '<td class="c-topic" contenteditable="true" data-placeholder="주제"></td>' +
+        '<td>' +
+          '<select class="status c-status">' +
+            '<option value="예정">예정</option>' +
+            '<option value="진행중">진행중</option>' +
+            '<option value="완료">완료</option>' +
+          '</select>' +
+        '</td>' +
+        '<td class="assignee-cell c-assignee" contenteditable="true" data-placeholder="-"></td>' +
+        '<td class="row-actions"><button class="icon-btn" title="삭제" aria-label="삭제">✕</button></td>';
+
+      tr.querySelector('.c-date').innerText = row.date || '';
+      tr.querySelector('.c-channel').innerText = row.channel || '';
+      tr.querySelector('.c-topic').innerText = row.topic || '';
+      tr.querySelector('.c-assignee').innerText = row.assignee || '';
+      var svcSel = tr.querySelector('.c-service');
+      svcSel.value = row.service || '공통';
+      applyServiceClass(svcSel);
+      var sel = tr.querySelector('.c-status');
+      sel.value = row.status || '예정';
+      applyStatusClass(sel);
+
+      tr.querySelectorAll('[contenteditable="true"]').forEach(function (cell) {
+        cell.addEventListener('input', persistCalendar);
+      });
+      svcSel.addEventListener('change', function () {
+        applyServiceClass(svcSel);
+        persistCalendar();
+      });
+      sel.addEventListener('change', function () {
+        applyStatusClass(sel);
+        persistCalendar();
+      });
+      tr.querySelector('.icon-btn').addEventListener('click', function () {
+        tr.remove();
+        persistCalendar();
+      });
+
+      body.appendChild(tr);
+    });
+    updateCalProgress(rows);
+  }
+
+  document.getElementById('addRowBtn').addEventListener('click', function () {
+    var rows = readRowsFromDOM();
+    var me = loadIdentity();
+    rows.push({ date: '', channel: '', service: '공통', topic: '', status: '예정', assignee: me ? me.name : '' });
+    renderCalendar(rows);
+    saveCalendar(rows);
+  });
+
+  renderCalendar(loadCalendar());
+
+  /* ===== 발행 전 체크리스트 ===== */
+  var checklistDef = [
+    { group: '공통', items: ['핵심 키워드 포함 확인', '오탈자 확인', '연락처/링크 정확한지 확인'] },
+    { group: '블로그', items: ['대표 이미지 첨부', '태그 3개 이상 등록'] },
+    { group: 'SNS(인스타·네이버 등)', items: ['이미지 비율 확인', '해시태그 확인'] }
+  ];
+
+  function loadChecklistState() {
+    try {
+      var raw = localStorage.getItem(CHK_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+
+  function saveChecklistState(state) { localStorage.setItem(CHK_KEY, JSON.stringify(state)); }
+
+  function totalChecklistCount() {
+    var total = 0;
+    checklistDef.forEach(function (g) { total += g.items.length; });
+    return total;
+  }
+
+  function updateChkProgress() {
+    var state = loadChecklistState();
+    var done = Object.keys(state).filter(function (k) { return state[k]; }).length;
+    document.getElementById('chkProgress').textContent = done + '/' + totalChecklistCount();
+  }
+
+  function renderChecklist() {
+    var area = document.getElementById('checklistArea');
+    var state = loadChecklistState();
+    area.innerHTML = '';
+
+    checklistDef.forEach(function (group, gi) {
+      var groupEl = document.createElement('div');
+      groupEl.className = 'checklist-group';
+
+      var h3 = document.createElement('h3');
+      h3.textContent = group.group;
+      groupEl.appendChild(h3);
+
+      group.items.forEach(function (label, ii) {
+        var key = gi + '_' + ii;
+        var itemEl = document.createElement('label');
+        itemEl.className = 'checklist-item';
+
+        var input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = !!state[key];
+
+        var span = document.createElement('span');
+        span.textContent = label;
+        if (input.checked) span.classList.add('done');
+
+        input.addEventListener('change', function () {
+          var s = loadChecklistState();
+          s[key] = input.checked;
+          saveChecklistState(s);
+          span.classList.toggle('done', input.checked);
+          updateChkProgress();
+        });
+
+        itemEl.appendChild(input);
+        itemEl.appendChild(span);
+        groupEl.appendChild(itemEl);
+      });
+
+      area.appendChild(groupEl);
+    });
+
+    updateChkProgress();
+  }
+
+  renderChecklist();
+
+  /* ===== 실적 기록 ===== */
+  var PERF_KEY = 'medimark_performance_v1';
+  var defaultPerf = [
+    { date: '2026-08-03', channel: '유튜브', content: '의료사고 전문가 인터뷰 - 강윤석 팀장', views: 1200, inquiries: 3 },
+    { date: '2026-07-27', channel: '인스타그램', content: 'TCI 기질성격검사 소개 카드뉴스', views: 340, inquiries: 5 },
+    { date: '2026-07-20', channel: '블로그', content: '「우리 아이 마음 지도, TCI로 읽다」 도서 소개', views: 210, inquiries: 8 }
+  ];
+
+  function loadPerf() {
+    try {
+      var raw = localStorage.getItem(PERF_KEY);
+      return raw ? JSON.parse(raw) : defaultPerf.slice();
+    } catch (e) { return defaultPerf.slice(); }
+  }
+
+  function savePerf(rows) { localStorage.setItem(PERF_KEY, JSON.stringify(rows)); }
+
+  function readPerfRowsFromDOM() {
+    var rows = [];
+    document.querySelectorAll('#perfBody tr').forEach(function (tr) {
+      rows.push({
+        date: tr.querySelector('.p-date').innerText.trim(),
+        channel: tr.querySelector('.p-channel').innerText.trim(),
+        content: tr.querySelector('.p-content').innerText.trim(),
+        views: Number(tr.querySelector('.p-views').value) || 0,
+        inquiries: Number(tr.querySelector('.p-inquiries').value) || 0
+      });
+    });
+    return rows;
+  }
+
+  function updatePerfTotals(rows) {
+    var totalViews = 0, totalInquiries = 0;
+    rows.forEach(function (r) { totalViews += Number(r.views) || 0; totalInquiries += Number(r.inquiries) || 0; });
+    document.getElementById('perfViewTotal').textContent = totalViews.toLocaleString('ko-KR');
+    document.getElementById('perfInquiryTotal').textContent = totalInquiries.toLocaleString('ko-KR');
+    document.getElementById('perfProgress').textContent = rows.length + '건';
+  }
+
+  function persistPerf() {
+    var rows = readPerfRowsFromDOM();
+    savePerf(rows);
+    updatePerfTotals(rows);
+  }
+
+  function renderPerf(rows) {
+    var body = document.getElementById('perfBody');
+    body.innerHTML = '';
+    rows.forEach(function (row) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="p-date date-cell" contenteditable="true" data-placeholder="YYYY-MM-DD"></td>' +
+        '<td class="p-channel" contenteditable="true" data-placeholder="채널"></td>' +
+        '<td class="p-content" contenteditable="true" data-placeholder="콘텐츠 제목"></td>' +
+        '<td><input class="num-cell p-views" type="number" min="0" inputmode="numeric"></td>' +
+        '<td><input class="num-cell p-inquiries" type="number" min="0" inputmode="numeric"></td>' +
+        '<td class="row-actions"><button class="icon-btn" title="삭제" aria-label="삭제">✕</button></td>';
+
+      tr.querySelector('.p-date').innerText = row.date || '';
+      tr.querySelector('.p-channel').innerText = row.channel || '';
+      tr.querySelector('.p-content').innerText = row.content || '';
+      tr.querySelector('.p-views').value = row.views || 0;
+      tr.querySelector('.p-inquiries').value = row.inquiries || 0;
+
+      tr.querySelectorAll('[contenteditable="true"]').forEach(function (cell) {
+        cell.addEventListener('input', persistPerf);
+      });
+      tr.querySelectorAll('input.num-cell').forEach(function (input) {
+        input.addEventListener('input', persistPerf);
+      });
+      tr.querySelector('.icon-btn').addEventListener('click', function () {
+        tr.remove();
+        persistPerf();
+      });
+
+      body.appendChild(tr);
+    });
+    updatePerfTotals(rows);
+  }
+
+  document.getElementById('addPerfRowBtn').addEventListener('click', function () {
+    var rows = readPerfRowsFromDOM();
+    rows.push({ date: '', channel: '', content: '', views: 0, inquiries: 0 });
+    renderPerf(rows);
+    savePerf(rows);
+  });
+
+  renderPerf(loadPerf());
+
+  /* ===== 채널 링크 모음 ===== */
+  var LINK_KEY = 'medimark_channels_v1';
+  var defaultLinks = [
+    { channel: '★ 의료분쟁 컨설팅 신청서', url: 'https://go.medimark.co.kr/medical-apply', note: '전환 목적지 ①' },
+    { channel: '★ 심리&진로 상담 신청서', url: '', note: '전환 목적지 ② — URL 킥오프미팅에서 확인 필요' },
+    { channel: '유튜브 (메디마크TV)', url: '', note: '기존 운영 채널' },
+    { channel: '인스타그램', url: '', note: '' },
+    { channel: '페이스북', url: '', note: '' },
+    { channel: '블로그 (네이버 추정)', url: 'https://blog.naver.com/chung389', note: '전달받은 링크 — 실제 운영 계정인지 킥오프미팅에서 확인 필요' }
+  ];
+
+  function loadLinks() {
+    try {
+      var raw = localStorage.getItem(LINK_KEY);
+      return raw ? JSON.parse(raw) : defaultLinks.slice();
+    } catch (e) { return defaultLinks.slice(); }
+  }
+
+  function saveLinks(rows) { localStorage.setItem(LINK_KEY, JSON.stringify(rows)); }
+
+  function isLikelyUrl(text) {
+    return /^https?:\/\/\S+/i.test(text.trim());
+  }
+
+  function readLinkRowsFromDOM() {
+    var rows = [];
+    document.querySelectorAll('#linkBody tr').forEach(function (tr) {
+      rows.push({
+        channel: tr.querySelector('.l-channel').innerText.trim(),
+        url: tr.querySelector('.l-url').innerText.trim(),
+        note: tr.querySelector('.l-note').innerText.trim()
+      });
+    });
+    return rows;
+  }
+
+  function updateLinkProgress(rows) {
+    document.getElementById('linkProgress').textContent = rows.length + '개';
+  }
+
+  function refreshOpenButton(tr) {
+    var url = tr.querySelector('.l-url').innerText.trim();
+    var btn = tr.querySelector('.open-link-btn');
+    if (isLikelyUrl(url)) {
+      btn.href = url;
+      btn.removeAttribute('aria-disabled');
+      btn.textContent = '열기 ↗';
+    } else {
+      btn.removeAttribute('href');
+      btn.setAttribute('aria-disabled', 'true');
+      btn.textContent = '링크 없음';
+    }
+  }
+
+  function persistLinks() {
+    var rows = readLinkRowsFromDOM();
+    saveLinks(rows);
+    updateLinkProgress(rows);
+  }
+
+  function renderLinks(rows) {
+    var body = document.getElementById('linkBody');
+    body.innerHTML = '';
+    rows.forEach(function (row) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="l-channel" contenteditable="true" data-placeholder="채널명"></td>' +
+        '<td>' +
+          '<div class="link-cell">' +
+            '<div class="l-url" contenteditable="true" data-placeholder="https://..."></div>' +
+            '<a class="open-link-btn" target="_blank" rel="noopener noreferrer">링크 없음</a>' +
+          '</div>' +
+        '</td>' +
+        '<td class="l-note" contenteditable="true" data-placeholder="담당자/메모"></td>' +
+        '<td class="row-actions"><button class="icon-btn" title="삭제" aria-label="삭제">✕</button></td>';
+
+      tr.querySelector('.l-channel').innerText = row.channel || '';
+      tr.querySelector('.l-url').innerText = row.url || '';
+      tr.querySelector('.l-note').innerText = row.note || '';
+      refreshOpenButton(tr);
+
+      tr.querySelectorAll('.l-channel, .l-note').forEach(function (cell) {
+        cell.addEventListener('input', persistLinks);
+      });
+      tr.querySelector('.l-url').addEventListener('input', function () {
+        refreshOpenButton(tr);
+        persistLinks();
+      });
+      tr.querySelector('.icon-btn').addEventListener('click', function () {
+        tr.remove();
+        persistLinks();
+      });
+
+      body.appendChild(tr);
+    });
+    updateLinkProgress(rows);
+  }
+
+  document.getElementById('addLinkRowBtn').addEventListener('click', function () {
+    var rows = readLinkRowsFromDOM();
+    rows.push({ channel: '', url: '', note: '' });
+    renderLinks(rows);
+    saveLinks(rows);
+  });
+
+  renderLinks(loadLinks());
+
+  /* =====================================================
+     채널 운영 기술 지원
+     ===================================================== */
+  var SUPPORT_KEY = 'medimark_support_v1';
+  var supportTypeOptions = ['업로드 오류', '계정 접근', '설정 변경', '성능 점검', '기타'];
+  var supportStatusOptions = ['접수', '처리중', '완료'];
+
+  var defaultSupport = [
+    { date: '2026-08-04', channel: '블로그', type: '계정 접근', content: '플랫폼 확인 및 관리자 권한 요청', status: '접수', assignee: '' },
+    { date: '2026-08-06', channel: '유튜브', type: '업로드 오류', content: '메디마크TV 업로드 실패 원인 점검', status: '처리중', assignee: '박서연' },
+    { date: '2026-08-08', channel: '인스타그램', type: '설정 변경', content: '비즈니스 계정 전환 지원', status: '접수', assignee: '' }
+  ];
+
+  function loadSupport() {
+    try {
+      var raw = localStorage.getItem(SUPPORT_KEY);
+      return raw ? JSON.parse(raw) : defaultSupport.slice();
+    } catch (e) { return defaultSupport.slice(); }
+  }
+  function saveSupport(rows) { localStorage.setItem(SUPPORT_KEY, JSON.stringify(rows)); }
+
+  function supportOptionsHtml(options) {
+    return options.map(function (o) { return '<option value="' + o + '">' + o + '</option>'; }).join('');
+  }
+
+  function applySupportStatusClass(select) {
+    select.classList.remove('sp-접수', 'sp-처리중', 'sp-완료');
+    select.classList.add('sp-' + select.value);
+  }
+
+  function readSupportRowsFromDOM() {
+    var rows = [];
+    document.querySelectorAll('#supportBody tr').forEach(function (tr) {
+      rows.push({
+        date: tr.querySelector('.s-date').innerText.trim(),
+        channel: tr.querySelector('.s-channel').innerText.trim(),
+        type: tr.querySelector('.s-type').value,
+        content: tr.querySelector('.s-content').innerText.trim(),
+        status: tr.querySelector('.s-status').value,
+        assignee: tr.querySelector('.s-assignee').innerText.trim()
+      });
+    });
+    return rows;
+  }
+
+  function updateSupportProgress(rows) {
+    document.getElementById('supportProgress').textContent = rows.length + '건';
+  }
+
+  function persistSupport() {
+    var rows = readSupportRowsFromDOM();
+    saveSupport(rows);
+    updateSupportProgress(rows);
+  }
+
+  function renderSupport(rows) {
+    var body = document.getElementById('supportBody');
+    body.innerHTML = '';
+    rows.forEach(function (row) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="s-date date-cell" contenteditable="true" data-placeholder="YYYY-MM-DD"></td>' +
+        '<td class="s-channel" contenteditable="true" data-placeholder="채널"></td>' +
+        '<td><select class="status s-type">' + supportOptionsHtml(supportTypeOptions) + '</select></td>' +
+        '<td class="s-content" contenteditable="true" data-placeholder="요청 내용"></td>' +
+        '<td><select class="status s-status">' + supportOptionsHtml(supportStatusOptions) + '</select></td>' +
+        '<td class="assignee-cell s-assignee" contenteditable="true" data-placeholder="-"></td>' +
+        '<td class="row-actions"><button class="icon-btn" title="삭제" aria-label="삭제">✕</button></td>';
+
+      tr.querySelector('.s-date').innerText = row.date || '';
+      tr.querySelector('.s-channel').innerText = row.channel || '';
+      tr.querySelector('.s-type').value = row.type || '기타';
+      tr.querySelector('.s-content').innerText = row.content || '';
+      tr.querySelector('.s-assignee').innerText = row.assignee || '';
+      var statusSel = tr.querySelector('.s-status');
+      statusSel.value = row.status || '접수';
+      applySupportStatusClass(statusSel);
+
+      tr.querySelectorAll('.s-date, .s-channel, .s-content, .s-assignee').forEach(function (cell) {
+        cell.addEventListener('input', persistSupport);
+      });
+      tr.querySelector('.s-type').addEventListener('change', persistSupport);
+      statusSel.addEventListener('change', function () {
+        applySupportStatusClass(statusSel);
+        persistSupport();
+      });
+      tr.querySelector('.icon-btn').addEventListener('click', function () {
+        tr.remove();
+        persistSupport();
+      });
+
+      body.appendChild(tr);
+    });
+    updateSupportProgress(rows);
+  }
+
+  document.getElementById('addSupportRowBtn').addEventListener('click', function () {
+    var rows = readSupportRowsFromDOM();
+    rows.push({ date: '', channel: '', type: '기타', content: '', status: '접수', assignee: '' });
+    renderSupport(rows);
+    saveSupport(rows);
+  });
+
+  renderSupport(loadSupport());
+
+  /* =====================================================
+     사용자 식별 (이름표) — 사원번호 + 이름
+     ⚠ 보안 로그인이 아닙니다. 서버가 없어 브라우저에서
+     비밀번호를 안전하게 검증할 수 없으므로, "누가 입력했는지"
+     구분용 이름표로만 동작합니다.
+     ===================================================== */
+  var ID_KEY = 'medimark_identity_v1';
+
+  function loadIdentity() {
+    try {
+      var raw = localStorage.getItem(ID_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+
+  function saveIdentity(id) { localStorage.setItem(ID_KEY, JSON.stringify(id)); }
+  function clearIdentity() { localStorage.removeItem(ID_KEY); }
+
+  function initials(name) {
+    var t = (name || '').trim();
+    return t ? t.charAt(0) : '?';
+  }
+
+  function renderIdentity() {
+    var card = document.getElementById('idCard');
+    var me = loadIdentity();
+
+    if (!me) {
+      card.innerHTML =
+        '<div class="id-title">사용자 확인</div>' +
+        '<div class="id-note">사원번호와 이름을 입력하면 캘린더에 등록한 항목에 이름이 남습니다. (보안 로그인이 아니라 이름표입니다)</div>' +
+        '<div class="id-form">' +
+          '<input id="idEmployeeNo" type="text" placeholder="사원번호" inputmode="numeric">' +
+          '<input id="idName" type="text" placeholder="이름">' +
+          '<button class="btn-id" id="idSaveBtn">시작하기</button>' +
+        '</div>';
+
+      document.getElementById('idSaveBtn').addEventListener('click', function () {
+        var empNo = document.getElementById('idEmployeeNo').value.trim();
+        var name = document.getElementById('idName').value.trim();
+        if (!name) { document.getElementById('idName').focus(); return; }
+        saveIdentity({ employeeNo: empNo, name: name });
+        renderIdentity();
+      });
+    } else {
+      card.innerHTML =
+        '<div class="id-chip-row">' +
+          '<div class="id-chip">' +
+            '<div class="avatar">' + initials(me.name) + '</div>' +
+            '<div class="id-meta">' +
+              '<div class="name">' + me.name + '님</div>' +
+              '<div class="empno">' + (me.employeeNo ? '사번 ' + me.employeeNo : '사번 미입력') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<button class="link-btn" id="idChangeBtn">다른 사람으로 전환</button>' +
+        '</div>';
+
+      document.getElementById('idChangeBtn').addEventListener('click', function () {
+        clearIdentity();
+        renderIdentity();
+      });
+    }
+  }
+
+  renderIdentity();
+})();
+</script>
+</body>
+</html>

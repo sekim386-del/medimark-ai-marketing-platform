@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메디마크 킥오프미팅 체크리스트 &amp; 자료</title>
+<style>
+  :root {
+    --bg: #F3F6F6;
+    --surface: #FFFFFF;
+    --surface-alt: #EAF0F0;
+    --ink: #17242A;
+    --ink-soft: #4B5D63;
+    --ink-faint: #7C8D92;
+    --accent: #0F6B72;
+    --accent-strong: #0B4F54;
+    --accent-soft-bg: #DCEEEF;
+    --line: #D7E1E1;
+    --good: #2E7D46;
+    --good-bg: #DFF0E2;
+    --shadow: 0 1px 2px rgba(15, 40, 43, 0.06), 0 6px 20px rgba(15, 40, 43, 0.06);
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0E1416;
+    --surface: #161F22;
+    --surface-alt: #1D2A2D;
+    --ink: #E4EDEE;
+    --ink-soft: #9FB4B8;
+    --ink-faint: #6F868A;
+    --accent: #4FC7CF;
+    --accent-strong: #7DDBE0;
+    --accent-soft-bg: #16363A;
+    --line: #2A3A3D;
+    --good: #5FBD7A;
+    --good-bg: #1C3324;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1416;
+      --surface: #161F22;
+      --surface-alt: #1D2A2D;
+      --ink: #E4EDEE;
+      --ink-soft: #9FB4B8;
+      --ink-faint: #6F868A;
+      --accent: #4FC7CF;
+      --accent-strong: #7DDBE0;
+      --accent-soft-bg: #16363A;
+      --line: #2A3A3D;
+      --good: #5FBD7A;
+      --good-bg: #1C3324;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Pretendard', '맑은 고딕', 'Malgun Gothic', -apple-system, sans-serif;
+    line-height: 1.65;
+    padding: 40px 20px 90px;
+  }
+
+  .wrap { max-width: 800px; margin: 0 auto; }
+
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    margin: 4px 0 6px;
+    text-wrap: balance;
+  }
+
+  .sub {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    max-width: 62ch;
+  }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--surface-alt);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+  }
+
+  section.card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 24px 26px;
+    margin-bottom: 20px;
+  }
+
+  .card-head { margin-bottom: 16px; }
+  .card-head .num {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .card-head h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+  .card-head p { margin: 0; font-size: 0.85rem; color: var(--ink-soft); }
+
+  /* 체크리스트 아이템 */
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 4px;
+    font-size: 0.92rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .check-item:hover { background: var(--surface-alt); }
+  .check-item input {
+    width: 17px; height: 17px; margin-top: 2px;
+    accent-color: var(--accent); flex-shrink: 0;
+  }
+  .check-item span.done { color: var(--ink-faint); text-decoration: line-through; }
+
+  /* 아젠다 타임라인 */
+  .agenda { list-style: none; margin: 0; padding: 0; }
+  .agenda li {
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+  .agenda li:last-child { border-bottom: none; }
+  .agenda time {
+    font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--accent-strong);
+    background: var(--accent-soft-bg);
+    border-radius: 6px;
+    padding: 3px 6px;
+    height: fit-content;
+    white-space: nowrap;
+  }
+  .agenda .label { font-weight: 600; }
+  .agenda .desc { font-size: 0.82rem; color: var(--ink-soft); margin-top: 2px; }
+
+  /* 질문 그룹 */
+  .qgroup { margin-bottom: 22px; }
+  .qgroup:last-child { margin-bottom: 0; }
+  .qgroup h3 {
+    font-size: 0.82rem; font-weight: 700; color: var(--ink-soft);
+    margin: 0 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line);
+  }
+  .qitem { margin-bottom: 12px; }
+  .qitem:last-child { margin-bottom: 0; }
+  .qitem .q { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+  .qitem textarea {
+    width: 100%;
+    min-height: 44px;
+    resize: vertical;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 0.86rem;
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .qitem textarea::placeholder { color: var(--ink-faint); }
+  .qitem textarea:focus { outline: none; box-shadow: 0 0 0 2px var(--accent); }
+
+  /* 요약 카드 */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+  .summary-tile {
+    background: var(--surface-alt);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .summary-tile .k {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+    color: var(--accent-strong); text-transform: uppercase; margin-bottom: 4px;
+  }
+  .summary-tile .v { font-size: 0.88rem; color: var(--ink); }
+
+  .link-line {
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+  }
+  .link-line strong { color: var(--ink); }
+
+  .progress-chip {
+    display: inline-block;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--good);
+    background: var(--good-bg);
+    border-radius: 999px;
+    padding: 3px 10px;
+    margin-top: 6px;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    margin-top: 34px;
+  }
+
+  .print-btn {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .print-btn:hover { color: var(--accent-strong); border-color: var(--accent); }
+
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ── 초대 메일 ── */
+  .email-field { margin-bottom: 14px; }
+  .email-field:last-of-type { margin-bottom: 0; }
+  .email-field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .email-field input,
+  .email-field textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 11px;
+    font-family: inherit;
+    font-size: 0.87rem;
+    background: var(--surface);
+    color: var(--ink);
+    resize: vertical;
+  }
+  .email-field textarea { min-height: 170px; line-height: 1.7; }
+  .email-field input:focus, .email-field textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .copy-btn {
+    border: 1px solid var(--line);
+    background: var(--accent-soft-bg);
+    color: var(--accent-strong);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  .copy-btn:hover { border-color: var(--accent); }
+  .copy-btn.copied { background: var(--good-bg); color: var(--good); border-color: transparent; }
+
+  /* ── 회의록 템플릿 ── */
+  .minutes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .minutes-field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .minutes-field input, .minutes-field textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 11px;
+    font-family: inherit;
+    font-size: 0.87rem;
+    background: var(--surface);
+    color: var(--ink);
+    resize: vertical;
+  }
+  .minutes-field textarea { min-height: 70px; }
+  .minutes-field input:focus, .minutes-field textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .minutes-field.full { grid-column: 1 / -1; }
+
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+  table.actions-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; min-width: 480px; }
+  table.actions-table th, table.actions-table td {
+    border-bottom: 1px solid var(--line);
+    padding: 9px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.actions-table tr:last-child td { border-bottom: none; }
+  table.actions-table th {
+    background: var(--surface-alt);
+    color: var(--ink-soft);
+    font-weight: 600;
+    font-size: 0.76rem;
+  }
+  table.actions-table td[contenteditable="true"] {
+    outline: none; border-radius: 4px; min-width: 60px;
+  }
+  table.actions-table td[contenteditable="true"]:focus {
+    background: var(--accent-soft-bg);
+    box-shadow: 0 0 0 2px var(--accent) inset;
+  }
+  table.actions-table td[contenteditable="true"]:empty::before {
+    content: attr(data-placeholder); color: var(--ink-faint);
+  }
+  .a-row-del {
+    border: none; background: transparent; color: var(--ink-faint);
+    cursor: pointer; font-size: 0.9rem; padding: 4px; border-radius: 6px;
+  }
+  .a-row-del:hover { color: #B23B3B; background: #F6E3E3; }
+  .btn-add-row {
+    border: none; background: var(--accent); color: #fff;
+    border-radius: 8px; padding: 8px 14px; font-size: 0.82rem;
+    font-weight: 700; cursor: pointer; margin-top: 10px; font-family: inherit;
+  }
+  .btn-add-row:hover { background: var(--accent-strong); }
+
+  @media (max-width: 520px) {
+    .minutes-grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; color: #000; }
+    .badges, .print-btn, .qitem textarea:placeholder-shown { }
+    .print-btn { display: none; }
+    section.card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+    a[href]:after { content: ""; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-row">
+    <div>
+      <div class="eyebrow">MEDIMARK · 온라인마케팅 새 체계 구축</div>
+      <h1>킥오프미팅 체크리스트 &amp; 자료</h1>
+      <p class="sub">메디마크와의 첫 미팅을 준비하고 진행하기 위한 자료입니다. 메모는 이 브라우저에 자동 저장되며, 인쇄해서 가져가실 수도 있습니다.</p>
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+  </div>
+
+  <div class="badges">
+    <span class="badge">완전 무료 구조 원칙 유지</span>
+    <span class="badge">입력한 메모는 이 브라우저에만 저장</span>
+  </div>
+
+  <!-- 1. 사전 준비 체크리스트 -->
+  <section class="card">
+    <div class="card-head">
+      <span class="num">01</span>
+      <h2>미팅 전 준비 체크리스트</h2>
+      <p>미팅 전에 아래를 하나씩 확인하세요.</p>
+    </div>
+    <div id="prepChecklist"></div>
+  </section>
+
+  <!-- 2. 아젠다 -->
+  <section class="card">
+    <div class="card-head">
+      <span class="num">02</span>
+      <h2>미팅 당일 진행 순서</h2>
+      <p>총 45~50분 기준 제안 흐름입니다. 상황에 맞게 조정하세요.</p>
+    </div>
+    <ul class="agenda" id="agendaList"></ul>
+
+    <div style="margin-top:16px; background:var(--surface-alt); border:1px dashed var(--line); border-radius:10px; padding:14px 16px; font-size:0.86rem; color:var(--ink-soft); line-height:1.7;">
+      <strong style="color:var(--ink);">데모 시연 우선순위 (10분 안에 끝내기)</strong><br>
+      이번이 3번 중 첫 미팅이라 완성도보다 신뢰 구축 + 정보 확인이 목적입니다. 시간은 짧게, 아래 순서대로만:<br>
+      ① <strong>AI 프롬프트 자동 생성</strong> (5분, 최우선 — 채널·서비스 선택 → 프롬프트 생성 → 무료 채팅에 붙여넣어 결과 받기까지 라이브로)<br>
+      ② <strong>콘텐츠 캘린더</strong> (3분 — 의료분쟁/TCI심리상담/도서출판 3개 서비스 분류 + 실명 전문가 반영된 예시 보여주기)<br>
+      ③ <strong>완전 무료 구조 원칙</strong> (2분, 말로만 설명 — 화면 시연 불필요)<br>
+      ④ 시간 남으면만: 반자동 채널 연동 짧게 언급<br>
+      성과 요약·검색·마감표시 등 세부 기능은 이번엔 아끼고 다음 미팅(파일럿 단계)에서 "그새 더 발전했다"는 인상을 주는 게 낫습니다.
+    </div>
+  </section>
+
+  <!-- 3. 디스커버리 질문 -->
+  <section class="card">
+    <div class="card-head">
+      <span class="num">03</span>
+      <h2>확인 질문 리스트</h2>
+      <p>미팅 중 메디마크 측에 확인하고, 답변을 바로 메모하세요.</p>
+    </div>
+    <div id="questionArea"></div>
+  </section>
+
+  <!-- 4. 요청 자료 -->
+  <section class="card">
+    <div class="card-head">
+      <span class="num">04</span>
+      <h2>요청 자료 체크리스트</h2>
+      <p>메디마크 측에 요청하고, 받으면 체크하세요.</p>
+    </div>
+    <div id="assetChecklist"></div>
+  </section>
+
+  <!-- 5. 한 장 요약 -->
+  <section class="card">
+    <div class="card-head">
+      <span class="num">05</span>
+      <h2>프로젝트 한 장 요약 (시연용)</h2>
+      <p>미팅에서 배경 설명 시 함께 보여줄 요약입니다.</p>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-tile">
+        <div class="k">공식 핵심 사업 (3가지)</div>
+        <div class="v">① 의료분쟁 컨설팅 ② TCI&amp;심리상담 ③ 의료전문 도서 출판</div>
+      </div>
+      <div class="summary-tile">
+        <div class="k">확인 필요한 확장 사업</div>
+        <div class="v">TES MIND AI(AI 디지털 심리상담, 학교 5곳 시범중) · 글로벌 의료관광 유치사업 · 진로상담/Academy</div>
+      </div>
+      <div class="summary-tile">
+        <div class="k">콘텐츠 마케팅 목적</div>
+        <div class="v">메디마크TV·도서 등으로 신뢰를 쌓아 각 사업의 "상담 신청" 전환 유도 (확인 필요)</div>
+      </div>
+      <div class="summary-tile">
+        <div class="k">비용 원칙</div>
+        <div class="v">유료 API·서버·광고비 없는 완전 무료 구조</div>
+      </div>
+      <div class="summary-tile">
+        <div class="k">진행 방식</div>
+        <div class="v">총 3회 미팅(킥오프 → 파일럿 → 완결) — 한 번에 크게 만들지 않고 단계별로 확인하며 진행</div>
+      </div>
+      <div class="summary-tile">
+        <div class="k">현재 진행 상황</div>
+        <div class="v">콘텐츠 생성 프로토타입 완료 (AI 프롬프트 자동 생성·캘린더·반자동 채널 연동·실적 기록). 실제 SNS 자동 게시 코드도 준비됨 — 계정 연동만 남음</div>
+      </div>
+    </div>
+    <div class="link-line">
+      <strong>회사 자료 확인 결과</strong> &mdash; (주)메디마크(사회적기업, 2022년 설립, 대표 정기국)의
+      공식 핵심 사업은 <strong>① 의료분쟁 컨설팅 ② TCI&amp;심리상담 ③ 의료전문 도서 출판</strong> 3가지입니다.
+      정신과 전문의 이안백, 소아정신과 김소연, 의료수사 전문 강윤석(경찰 최초 의료수사관 1호) 등이 참여하며,
+      「의료사고, 진실을 찾아서」(강윤석 저)·「우리 아이 마음 지도, TCI로 읽다」(이안백 저) 등 도서를 출간했습니다.
+      메디마크TV(유튜브)·블로그(전달받은 링크 기준 네이버 추정: blog.naver.com/chung389)를 이미 운영 중이며,
+      인스타그램·페이스북·블로그 자동 업로드 및 콘텐츠 생성, 보유 채널 운영 기술 지원을 요청.
+      AI 활용도는 <strong>대화·기획서 작성 수준</strong>으로 확인 — 유료 API 없이 무료 채팅 기반으로 충분합니다.
+      <br><br>
+      <strong>추가로 확인이 필요한 것</strong> &mdash; 최근 자료에서 <strong>"TES MIND AI"</strong>(AI가 사전문진·
+      심리분석·상담기록·리포트를 자동 생성하는 별도 AI 플랫폼 사업, 학교 5곳에서 시범 진행 중)와
+      <strong>"글로벌 의료관광 유치사업"</strong>(외국인 환자 유치, global.medimark.co.kr)이 확인되었는데,
+      이 두 가지가 이번 온라인마케팅 프로젝트 범위에 포함되는지는 반드시 확인이 필요합니다 (03번 질문 참고).
+      인스타그램/페이스북/유튜브는 공식 API로 자동 게시가 가능하나 계정 전환·Meta·Google 심사가 선행되어야 합니다
+      (유튜브는 심사 전 업로드 영상이 비공개 처리됨). 블로그가 네이버로 확인되면 공식 자동 게시 API가 없어
+      반자동 방식으로 진행합니다.
+    </div>
+  </section>
+
+  <!-- 6. 초대 메일 초안 -->
+  <section class="card">
+    <div class="card-head">
+      <span class="num">06</span>
+      <h2>킥오프미팅 초대 메일 (초안)</h2>
+      <p>제목·본문의 [ ] 부분만 채워서 그대로 보내시면 됩니다.</p>
+    </div>
+
+    <div class="email-field">
+      <label for="emailSubject">제목</label>
+      <input id="emailSubject" type="text">
+    </div>
+    <div class="email-field">
+      <label for="emailBody">본문</label>
+      <textarea id="emailBody"></textarea>
+    </div>
+    <button class="copy-btn" id="emailCopyBtn">📋 제목+본문 복사</button>
+  </section>
+
+  <!-- 7. 회의록 템플릿 -->
+  <section class="card">
+    <div class="card-head">
+      <span class="num">07</span>
+      <h2>회의록 템플릿</h2>
+      <p>미팅 중 또는 직후에 채워 넣으세요.</p>
+    </div>
+
+    <div class="minutes-grid">
+      <div class="minutes-field">
+        <label for="minDate">일시</label>
+        <input id="minDate" type="text" placeholder="예: 2026-08-14 오후 2시">
+      </div>
+      <div class="minutes-field">
+        <label for="minPlace">장소 / 방식</label>
+        <input id="minPlace" type="text" placeholder="예: 메디마크 회의실 / 화상(Zoom)">
+      </div>
+      <div class="minutes-field full">
+        <label for="minAttendees">참석자</label>
+        <input id="minAttendees" type="text" placeholder="예: 메디마크 - 000, 000 / 우리 측 - 000">
+      </div>
+      <div class="minutes-field full">
+        <label for="minSummary">논의 요약</label>
+        <textarea id="minSummary" placeholder="확인 질문 리스트(03) 답변, 주요 논의 내용을 정리하세요."></textarea>
+      </div>
+      <div class="minutes-field full">
+        <label for="minDecisions">결정사항</label>
+        <textarea id="minDecisions" placeholder="이번 미팅에서 확정된 사항을 적으세요."></textarea>
+      </div>
+    </div>
+
+    <div class="minutes-field full" style="margin-bottom: 10px;">
+      <label>액션 아이템</label>
+    </div>
+    <div class="table-scroll">
+      <table class="actions-table" id="actionsTable">
+        <thead>
+          <tr>
+            <th style="width:110px;">담당자</th>
+            <th>할 일</th>
+            <th style="width:110px;">기한</th>
+            <th style="width:32px;"></th>
+          </tr>
+        </thead>
+        <tbody id="actionsBody"></tbody>
+      </table>
+    </div>
+    <button class="btn-add-row" id="addActionBtn">+ 항목 추가</button>
+
+    <div class="minutes-field full" style="margin-top: 16px;">
+      <label for="minNext">다음 미팅 (일정 후보)</label>
+      <input id="minNext" type="text" placeholder="예: 8/21(금) 또는 8/24(월) 오후">
+    </div>
+  </section>
+
+  <footer>이 문서는 초안입니다. 미팅 후 실제 확인된 내용으로 업데이트하세요.</footer>
+</div>
+
+<script>
+(function () {
+  var PREP_KEY = 'medimark_kickoff_prep_v1';
+  var ASSET_KEY = 'medimark_kickoff_assets_v1';
+  var NOTES_KEY = 'medimark_kickoff_notes_v1';
+
+  function loadJSON(key) {
+    try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : {}; }
+    catch (e) { return {}; }
+  }
+  function saveJSON(key, obj) { localStorage.setItem(key, JSON.stringify(obj)); }
+
+  /* ===== 1. 사전 준비 체크리스트 ===== */
+  var prepItems = [
+    '미팅 일시 · 장소(또는 화상 링크) 확정',
+    '참석자 명단 확인 (의사결정권자 참석 여부 포함)',
+    '프로젝트 배경 · 목적 요약 자료 준비',
+    '1단계 대시보드 시연 사전 테스트 (링크 미리 열어보기)',
+    '확인 질문 리스트(03번 섹션) 출력 또는 화면 공유 준비',
+    '요청 자료 목록(04번 섹션) 사전에 이메일로 미리 전달',
+    '회의록 작성 담당자 지정',
+    '다음 미팅 후보 일정 2~3개 준비'
+  ];
+
+  function renderChecklist(containerId, items, storageKey) {
+    var area = document.getElementById(containerId);
+    var state = loadJSON(storageKey);
+    area.innerHTML = '';
+    items.forEach(function (label, i) {
+      var key = 'i' + i;
+      var wrap = document.createElement('label');
+      wrap.className = 'check-item';
+
+      var input = document.createElement('input');
+      input.type = 'checkbox';
+      input.checked = !!state[key];
+
+      var span = document.createElement('span');
+      span.textContent = label;
+      if (input.checked) span.classList.add('done');
+
+      input.addEventListener('change', function () {
+        var s = loadJSON(storageKey);
+        s[key] = input.checked;
+        saveJSON(storageKey, s);
+        span.classList.toggle('done', input.checked);
+      });
+
+      wrap.appendChild(input);
+      wrap.appendChild(span);
+      area.appendChild(wrap);
+    });
+  }
+
+  renderChecklist('prepChecklist', prepItems, PREP_KEY);
+
+  /* ===== 2. 아젠다 ===== */
+  var agenda = [
+    { time: '0–5분', label: '인사 및 참석자 소개', desc: '양측 참석자, 각자의 역할 확인' },
+    { time: '5–10분', label: '프로젝트 배경 및 목적 설명', desc: '왜 이 프로젝트를 시작했는지 공유' },
+    { time: '10–15분', label: '진행 원칙 안내', desc: '완전 무료 구조 — 유료 API·광고비 없이 단계적으로 구축' },
+    { time: '15–25분', label: '1단계 프로토타입 시연', desc: 'AI 프롬프트 자동 생성 라이브 데모 → 콘텐츠 캘린더 → 완전 무료 구조 설명 (아래 우선순위 참고)' },
+    { time: '25–40분', label: '확인 질문 (디스커버리)', desc: '현재 채널·목표·브랜드 자료 등 03번 질문지 진행' },
+    { time: '40–48분', label: '다음 단계 및 일정 협의', desc: '파일럿·완결 단계 일정 협의 + Meta 앱 심사 2~4주 소요 안내 (계정 받는 즉시 심사 신청 예정)' },
+    { time: '48–50분', label: 'Q&A 및 마무리', desc: '남은 질문, 역할 분담 재확인' }
+  ];
+
+  var agendaList = document.getElementById('agendaList');
+  agenda.forEach(function (a) {
+    var li = document.createElement('li');
+    li.innerHTML =
+      '<time>' + a.time + '</time>' +
+      '<div><div class="label">' + a.label + '</div><div class="desc">' + a.desc + '</div></div>';
+    agendaList.appendChild(li);
+  });
+
+  /* ===== 3. 확인 질문 (메모 가능) ===== */
+  var questionGroups = [
+    {
+      group: '브랜드 · 기본 정보',
+      items: [
+        '저희가 파악한 공식 3대 사업(① 의료분쟁 컨설팅 ② TCI&진로 상담 ③ 의료전문 도서 출판) 구성이 맞나요?',
+        '"TES MIND AI"(AI 기반 디지털 심리상담, 학교 5곳 시범사업)는 이번 온라인마케팅 프로젝트와 별개의 사업인가요, 아니면 마케팅 대상에 포함되나요?',
+        '"글로벌 의료관광 유치사업"(global.medimark.co.kr)도 이번 프로젝트 범위에 포함되나요? (다국어 콘텐츠가 필요할 수 있어 범위가 크게 달라집니다)',
+        '주로 만나고 싶은 고객(연령대, 관심사 등)은 누구인가요?'
+      ]
+    },
+    {
+      group: '현재 온라인 채널 현황',
+      items: [
+        '메디마크TV(유튜브)도 이번 자동화 범위에 포함하나요, 아니면 지금처럼 직접 운영하실 건가요?',
+        '전달받은 블로그 링크(blog.naver.com/chung389)가 실제 운영 중인 공식 계정이 맞나요? 네이버 블로그가 맞다면 공식 자동 게시 API가 없어 반자동으로 진행해야 합니다.',
+        '현재 운영 중인 채널이 있나요? (홈페이지, 블로그, 인스타그램, 페이스북, 유튜브 등)',
+        '해당 채널 관리자 권한(또는 API 접근)을 받을 수 있나요? (직접 접근 없이 넘겨받는 방식도 가능)'
+      ]
+    },
+    {
+      group: '목표 · 우선순위',
+      items: [
+        '"Academy"는 어떤 서비스인가요? (교육 콘텐츠? 강의 판매?) 이번 온라인마케팅 대상에 포함되나요?',
+        '"의료분쟁 컨설팅"·"심리&진로 상담"·"Academy" 중 이번에 우선순위로 다룰 영역이 있나요?',
+        '"심리&진로 상담 신청" 페이지의 정확한 URL을 알려주실 수 있나요? (의료분쟁 신청서는 확인됨: go.medimark.co.kr/medical-apply)',
+        '콘텐츠 마케팅의 최종 목표가 각 서비스의 상담 신청서 제출(전환)이 맞나요? 서비스별 월 목표 신청 건수가 있나요?',
+        '상담 신청 건수를 저희 실적 기록 대시보드에서 추적하려면, 채널별·서비스별 유입 경로를 확인할 방법이 있나요?',
+        '1단계 이후 가장 먼저 다뤘으면 하는 채널/주제가 있나요?'
+      ]
+    },
+    {
+      group: '보유 자료 · 톤앤매너',
+      items: [
+        '로고, 브랜드 컬러, 사진 등 보유하신 자료가 있나요?',
+        '선호하는 콘텐츠 톤(신뢰감 있게 / 친근하게 등)이 있나요?'
+      ]
+    },
+    {
+      group: '운영 · 승인 구조',
+      items: [
+        '콘텐츠 최종 승인은 누가 하나요? 검토에 보통 며칠 정도 걸리나요?',
+        '심리상담 관련 콘텐츠 표현에 사내에서 확인하는 절차나 유의사항이 있나요?'
+      ]
+    },
+    {
+      group: '콘텐츠 제작 현황 (도서 · 영상)',
+      items: [
+        '「의료사고, 진실을 찾아서」·「우리 아이 마음 지도, TCI로 읽다」 외에 새로 출간 예정인 도서가 있나요?',
+        '도서 출간에 맞춰 온라인마케팅 콘텐츠(서평, 저자 인터뷰, 발췌 카드뉴스 등)를 함께 제작하면 될까요?',
+        '제작 중인 도서·영상 콘텐츠는 어떤 주기로 나오나요? (예: 분기 1권 신간, 주 1회 영상 클립 등)',
+        '"채널 운영 기술 지원"이 구체적으로 어떤 걸 의미하나요? (예: 업로드 대행, 오류 대응, 계정 관리 등)'
+      ]
+    },
+    {
+      group: 'SNS 자동화 · AI 활용 (요청 확인)',
+      items: [
+        '블로그가 네이버라면 공식 자동 게시 API가 없어 완전 자동화 시 계정 정지 위험이 있습니다 — 티스토리/워드프레스 등이라면 자동화가 가능한데, 어느 쪽인가요?',
+        '인스타그램 계정이 비즈니스/크리에이터 계정으로 전환되어 있나요? 연결된 페이스북 페이지가 있나요? (없다면 자동 게시 API 신청 전 먼저 전환이 필요합니다)',
+        '메타 비즈니스 매니저 관리자 권한을 저희 쪽에 부여해 주실 수 있나요? (API 앱 등록·심사에 필요)',
+        '메디마크TV 자동 업로드를 원하시면, YouTube는 Google 심사를 통과하기 전까지 업로드된 영상이 비공개로만 처리됩니다 — 이 제약을 감안하고 진행해도 괜찮으신가요?',
+        'Meta·Google 앱 심사에 통상 몇 주가 걸리는데, 이 일정 감안하고 진행해도 괜찮으신가요?',
+        '콘텐츠 생성에 AI를 활용할 때, 검토·승인이 꼭 필요한 부분이 있나요? (예: 사건·의료사고 관련 표현, 명예훼손 소지 검수)',
+        '지금 AI를 어떤 용도로, 어떻게 활용하고 계신가요? (대화·기획서 작성 수준이라고 들었는데, 구체적으로 알려주세요)'
+      ]
+    }
+  ];
+
+  var qArea = document.getElementById('questionArea');
+  var notes = loadJSON(NOTES_KEY);
+  var qi = 0;
+  questionGroups.forEach(function (group) {
+    var gEl = document.createElement('div');
+    gEl.className = 'qgroup';
+    var h3 = document.createElement('h3');
+    h3.textContent = group.group;
+    gEl.appendChild(h3);
+
+    group.items.forEach(function (q) {
+      var key = 'q' + qi; qi++;
+      var itemEl = document.createElement('div');
+      itemEl.className = 'qitem';
+
+      var qLabel = document.createElement('div');
+      qLabel.className = 'q';
+      qLabel.textContent = q;
+
+      var ta = document.createElement('textarea');
+      ta.placeholder = '메모 / 답변 입력';
+      ta.value = notes[key] || '';
+      ta.addEventListener('input', function () {
+        var n = loadJSON(NOTES_KEY);
+        n[key] = ta.value;
+        saveJSON(NOTES_KEY, n);
+      });
+
+      itemEl.appendChild(qLabel);
+      itemEl.appendChild(ta);
+      gEl.appendChild(itemEl);
+    });
+
+    qArea.appendChild(gEl);
+  });
+
+  /* ===== 4. 요청 자료 체크리스트 ===== */
+  var assetItems = [
+    '로고 파일 (고해상도)',
+    '브랜드 컬러 · 폰트 가이드 (있는 경우)',
+    '기존 도서 표지 · 영상 콘텐츠 샘플',
+    '메디마크TV(유튜브) 채널 관리자 정보 — 자동화 범위 포함 시',
+    '블로그 관리자 계정 정보 (또는 API 접근 권한) — 플랫폼 확인 후',
+    '기존 SNS(인스타·페이스북) 계정 정보 (로그인 또는 관리자 초대)',
+    '기존에 써온 홍보 문구 · 슬로건',
+    '의료사고·심리상담 관련 콘텐츠 표현 심의 관련 사내 지침 (있는 경우)',
+    '인스타그램 비즈니스 계정 · 연결된 페이스북 페이지 정보',
+    '메타 비즈니스 매니저(Business Manager) 관리자 권한'
+  ];
+  renderChecklist('assetChecklist', assetItems, ASSET_KEY);
+
+  /* ===== 6. 초대 메일 초안 ===== */
+  var EMAIL_KEY = 'medimark_kickoff_email_v1';
+
+  var defaultSubject = '[메디마크] 온라인마케팅 프로젝트 킥오프미팅 제안드립니다';
+  var defaultBody =
+    '안녕하세요, 메디마크 담당자님.\n\n' +
+    'medimark.co.kr 온라인마케팅 새 체계 구축을 위한 킥오프미팅을 제안드리고자 합니다.\n' +
+    '유료 API·서버 비용 없이, 단계적으로 시스템을 만들어가는 방향으로 준비하고 있습니다.\n\n' +
+    '■ 일시(안): 2026년 8월 11일(화) 오전 11시\n' +
+    '■ 장소/방식: 메디마크 사무실 회의실 (대면)\n' +
+    '■ 소요 시간: 약 45~50분\n\n' +
+    '■ 진행 순서\n' +
+    '1) 프로젝트 배경 및 목적 설명\n' +
+    '2) 진행 원칙 안내 (완전 무료 구조)\n' +
+    '3) 1단계 데모앱 시연\n' +
+    '4) 현재 채널(메디마크TV·인스타·페이스북·블로그) · 서비스별 목표 · 보유 자료 확인\n' +
+    '5) 다음 단계 및 일정 협의\n\n' +
+    '미팅 전 아래 자료가 있으시면 미리 공유해 주시면 준비에 큰 도움이 됩니다.\n' +
+    '- 로고 파일, 브랜드 컬러 가이드\n' +
+    '- 현재 운영 중인 채널 목록 (홈페이지, 블로그, SNS 등)\n\n' +
+    '편하신 일정 알려주시면 맞춰서 조율하겠습니다.\n' +
+    '감사합니다.\n\n' +
+    '[보내는 사람 이름]';
+
+  var emailSubjectEl = document.getElementById('emailSubject');
+  var emailBodyEl = document.getElementById('emailBody');
+
+  (function loadEmail() {
+    var saved = loadJSON(EMAIL_KEY);
+    emailSubjectEl.value = (saved && saved.subject) || defaultSubject;
+    emailBodyEl.value = (saved && saved.body) || defaultBody;
+  })();
+
+  function persistEmail() {
+    saveJSON(EMAIL_KEY, { subject: emailSubjectEl.value, body: emailBodyEl.value });
+  }
+  emailSubjectEl.addEventListener('input', persistEmail);
+  emailBodyEl.addEventListener('input', persistEmail);
+
+  document.getElementById('emailCopyBtn').addEventListener('click', function () {
+    var text = '제목: ' + emailSubjectEl.value + '\n\n' + emailBodyEl.value;
+    var btn = this;
+    function showCopied() {
+      var original = '📋 제목+본문 복사';
+      btn.textContent = '✓ 복사됨';
+      btn.classList.add('copied');
+      setTimeout(function () { btn.textContent = original; btn.classList.remove('copied'); }, 1800);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showCopied, fallbackCopyText);
+    } else {
+      fallbackCopyText();
+    }
+    function fallbackCopyText() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      showCopied();
+    }
+  });
+
+  /* ===== 7. 회의록 템플릿 ===== */
+  var MINUTES_KEY = 'medimark_kickoff_minutes_v1';
+  var ACTIONS_KEY = 'medimark_kickoff_actions_v1';
+
+  var minutesFieldIds = ['minDate', 'minPlace', 'minAttendees', 'minSummary', 'minDecisions', 'minNext'];
+  (function loadMinutes() {
+    var saved = loadJSON(MINUTES_KEY);
+    minutesFieldIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (saved && typeof saved[id] === 'string') el.value = saved[id];
+      el.addEventListener('input', function () {
+        var s = loadJSON(MINUTES_KEY);
+        s[id] = el.value;
+        saveJSON(MINUTES_KEY, s);
+      });
+    });
+  })();
+
+  var defaultActions = [
+    { owner: '', task: '요청 자료(로고·브랜드 가이드) 전달', due: '' }
+  ];
+
+  function loadActions() {
+    try {
+      var raw = localStorage.getItem(ACTIONS_KEY);
+      return raw ? JSON.parse(raw) : defaultActions.slice();
+    } catch (e) { return defaultActions.slice(); }
+  }
+  function saveActions(rows) { localStorage.setItem(ACTIONS_KEY, JSON.stringify(rows)); }
+
+  function readActionRowsFromDOM() {
+    var rows = [];
+    document.querySelectorAll('#actionsBody tr').forEach(function (tr) {
+      rows.push({
+        owner: tr.querySelector('.a-owner').innerText.trim(),
+        task: tr.querySelector('.a-task').innerText.trim(),
+        due: tr.querySelector('.a-due').innerText.trim()
+      });
+    });
+    return rows;
+  }
+
+  function persistActions() { saveActions(readActionRowsFromDOM()); }
+
+  function renderActions(rows) {
+    var body = document.getElementById('actionsBody');
+    body.innerHTML = '';
+    rows.forEach(function (row) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="a-owner" contenteditable="true" data-placeholder="담당자"></td>' +
+        '<td class="a-task" contenteditable="true" data-placeholder="할 일"></td>' +
+        '<td class="a-due" contenteditable="true" data-placeholder="MM/DD"></td>' +
+        '<td><button class="a-row-del" title="삭제" aria-label="삭제">✕</button></td>';
+
+      tr.querySelector('.a-owner').innerText = row.owner || '';
+      tr.querySelector('.a-task').innerText = row.task || '';
+      tr.querySelector('.a-due').innerText = row.due || '';
+
+      tr.querySelectorAll('[contenteditable="true"]').forEach(function (cell) {
+        cell.addEventListener('input', persistActions);
+      });
+      tr.querySelector('.a-row-del').addEventListener('click', function () {
+        tr.remove();
+        persistActions();
+      });
+
+      body.appendChild(tr);
+    });
+  }
+
+  document.getElementById('addActionBtn').addEventListener('click', function () {
+    var rows = readActionRowsFromDOM();
+    rows.push({ owner: '', task: '', due: '' });
+    renderActions(rows);
+    saveActions(rows);
+  });
+
+  renderActions(loadActions());
+})();
+</script>
+</body>
+</html>

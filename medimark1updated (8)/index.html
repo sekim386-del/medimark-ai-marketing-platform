@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메디마크 온라인마케팅 도구 모음</title>
+<style>
+  :root {
+    --bg: #F3F6F6;
+    --surface: #FFFFFF;
+    --surface-alt: #EAF0F0;
+    --ink: #17242A;
+    --ink-soft: #4B5D63;
+    --ink-faint: #7C8D92;
+    --accent: #0E8F82;
+    --accent-strong: #0A6E63;
+    --accent-soft-bg: #E1F4F0;
+    --line: #D7E1E1;
+    --shadow: 0 1px 2px rgba(15, 40, 43, 0.06), 0 6px 20px rgba(15, 40, 43, 0.06);
+    --brand-blue: #12AEDD;
+    --brand-teal: #00C08B;
+    --brand-gray: #8A8F93;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0E1416; --surface: #161F22; --surface-alt: #1D2A2D;
+    --ink: #E4EDEE; --ink-soft: #9FB4B8; --ink-faint: #6F868A;
+    --accent: #3FCDBB; --accent-strong: #7DE4D5; --accent-soft-bg: #143732;
+    --line: #2A3A3D;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --brand-blue: #4FC4EA; --brand-teal: #2FE0AA; --brand-gray: #9AA0A4;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1416; --surface: #161F22; --surface-alt: #1D2A2D;
+      --ink: #E4EDEE; --ink-soft: #9FB4B8; --ink-faint: #6F868A;
+      --accent: #3FCDBB; --accent-strong: #7DE4D5; --accent-soft-bg: #143732;
+      --line: #2A3A3D;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+      --brand-blue: #4FC4EA; --brand-teal: #2FE0AA; --brand-gray: #9AA0A4;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Pretendard', '맑은 고딕', 'Malgun Gothic', -apple-system, sans-serif;
+    line-height: 1.6;
+    padding: 48px 20px 70px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+
+  .brandmark { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+  .brandmark .mark-icon { width: 26px; height: 26px; flex-shrink: 0; display: block; }
+  .brandmark .wordmark { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1; }
+  .brandmark .w-medi {
+    background: linear-gradient(100deg, var(--brand-blue), var(--brand-teal));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .brandmark .w-mark { color: var(--brand-gray); font-weight: 700; }
+
+  .eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; }
+  h1 { font-size: 1.7rem; font-weight: 800; margin: 4px 0 10px; text-wrap: balance; }
+  .sub { font-size: 0.95rem; color: var(--ink-soft); margin: 0 0 24px; max-width: 60ch; }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 34px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 600;
+    color: var(--accent-strong); background: var(--accent-soft-bg); border: 1px solid var(--line);
+    border-radius: 999px; padding: 5px 12px;
+  }
+  .badge.dim { color: var(--ink-soft); background: var(--surface-alt); }
+
+  .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+  @media (max-width: 620px) { .tool-grid { grid-template-columns: 1fr; } }
+
+  a.tool-card {
+    display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow); padding: 22px 22px 20px; text-decoration: none; color: inherit;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  a.tool-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(15,40,43,0.08), 0 12px 28px rgba(15,40,43,0.1); }
+  a.tool-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .tool-card .emoji { font-size: 1.6rem; margin-bottom: 10px; display: block; }
+  .tool-card .tname { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+  .tool-card .tdesc { font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 14px; }
+  .tool-card .tenter {
+    font-size: 0.8rem; font-weight: 700; color: var(--accent-strong); display: inline-flex; align-items: center; gap: 4px;
+  }
+
+  .info-note {
+    font-size: 0.85rem; color: var(--ink-soft); background: var(--surface-alt);
+    border: 1px dashed var(--line); border-radius: 10px; padding: 16px 18px;
+  }
+  .info-note strong { color: var(--ink); }
+  .info-note ul { margin: 8px 0 0; padding-left: 20px; }
+  .info-note li { margin-bottom: 3px; }
+
+  footer { text-align: center; font-size: 0.76rem; color: var(--ink-faint); margin-top: 34px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brandmark">
+    <svg class="mark-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="11" fill="url(#markGradIdx)"/>
+      <path d="M7.2 12.3l3 3 6.6-6.6" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs>
+        <linearGradient id="markGradIdx" x1="1" y1="12" x2="23" y2="12" gradientUnits="userSpaceOnUse">
+          <stop stop-color="var(--brand-blue)"/><stop offset="1" stop-color="var(--brand-teal)"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <span class="wordmark"><span class="w-medi">Medi</span><span class="w-mark">mark</span></span>
+  </div>
+
+  <div class="eyebrow">온라인마케팅 새 체계 구축</div>
+  <h1>마케팅 도구 모음</h1>
+  <p class="sub">완전 무료 구조로 단계적으로 만든 도구들입니다. 아래에서 필요한 도구를 골라 열어보세요.</p>
+
+  <div class="badges">
+    <span class="badge"><span>●</span>완전 무료 구조</span>
+    <span class="badge dim">유료 API 미사용</span>
+    <span class="badge dim">데이터는 각 브라우저에만 저장</span>
+  </div>
+
+  <div class="tool-grid">
+    <a class="tool-card" href="dashboard.html">
+      <span class="emoji">📋</span>
+      <div class="tname">온라인마케팅 대시보드</div>
+      <div class="tdesc">콘텐츠 캘린더, 발행 전 체크리스트, 실적 기록, 채널 링크 모음.</div>
+      <span class="tenter">열기 →</span>
+    </a>
+
+    <a class="tool-card" href="requirements.html">
+      <span class="emoji">📡</span>
+      <div class="tname">요구사항 대응 체크리스트</div>
+      <div class="tdesc">SNS 자동 업로드 채널별 실행 가능성, 준비물, 진행 로드맵.</div>
+      <span class="tenter">열기 →</span>
+    </a>
+
+    <a class="tool-card" href="pr-support.html">
+      <span class="emoji">📝</span>
+      <div class="tname">채널 운영 지원 도구</div>
+      <div class="tdesc">자료정리함, AI 프롬프트 템플릿 모음 (유튜브 · SNS · 블로그).</div>
+      <span class="tenter">열기 →</span>
+    </a>
+
+    <a class="tool-card" href="marketing-app/index.html">
+      <span class="emoji">🗓️</span>
+      <div class="tname">마케팅 콘텐츠 생성체계 (v1)</div>
+      <div class="tdesc">콘텐츠 캘린더 CRUD, AI 프롬프트 자동 생성, 반자동 채널 연동 — 실제 동작하는 프로그램.</div>
+      <span class="tenter">열기 →</span>
+    </a>
+  </div>
+
+  <div class="info-note">
+    <strong>이 사이트에 대해</strong>
+    <ul>
+      <li>모든 페이지는 서버·데이터베이스·유료 API 없이 정적 HTML/CSS/JS로만 동작합니다.</li>
+      <li>입력한 내용은 각 페이지가 열린 브라우저에만 저장됩니다 (localStorage). 다른 기기·다른 브라우저에서는 보이지 않습니다.</li>
+      <li>여러 명이 데이터를 같이 봐야 한다면 별도 준비가 필요합니다 — 자세한 내용은 대시보드 페이지의 사용자 이름표 안내를 참고하세요.</li>
+      <li>Meta/Google API 심사 제출용 <a href="privacy-policy.html">개인정보처리방침(초안)</a>도 준비되어 있습니다.</li>
+    </ul>
+  </div>
+
+  <footer>메디마크 온라인마케팅 새 체계 구축 · 완전 무료 구조</footer>
+</div>
+</body>
+</html>

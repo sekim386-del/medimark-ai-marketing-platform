@@ -1,0 +1,15 @@
+[build]
+  publish = "."
+  functions = "marketing-app/netlify/functions"
+
+[dev]
+  functions = "marketing-app/netlify/functions"
+
+# 사이트 루트(medimark1.netlify.app)로 접속하면 바로 마케팅 콘텐츠 생성체계(v1)로 이동합니다.
+# 허브 페이지(index.html)와 다른 도구들(dashboard.html, kickoff.html 등)은 그대로 남아있고
+# 주소창에 직접 입력하면 계속 접근 가능합니다.
+[[redirects]]
+  from = "/"
+  to = "/marketing-app/"
+  status = 302
+  force = true
