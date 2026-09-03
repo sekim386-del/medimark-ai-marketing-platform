@@ -49,6 +49,25 @@ exports.handler = async function (event) {
       return shared.json(502, { ok: false, error: 'container_create_failed', detail: createData });
     }
 
+    // 인스타그램 서버가 이미지를 다운로드·처리할 시간이 필요합니다. status_code가
+    // FINISHED가 되기 전에 바로 게시를 호출하면 "Media ID is not available" 오류가 납니다.
+    // 주의: Netlify Functions(동기 함수)는 기본 실행시간 제한이 10초(플랜에 따라 최대 26초)라서,
+    // Apps Script처럼 넉넉하게 기다릴 수 없습니다. 아래는 그 안에 맞춘 최소한의 대기(최대 4회 x 1.5초 = 6초)이며,
+    // 실제 운영 중 타임아웃/미완료 오류가 잦으면 이 함수를 Netlify Background Function으로
+    // 전환하는 걸 권장합니다(최대 15분까지 실행 가능, 파일명 끝에 '-background' 접미사 필요).
+    var statusUrl = GRAPH_BASE + '/' + createData.id + '?fields=status_code&access_token=' + encodeURIComponent(IG_ACCESS_TOKEN);
+    for (var i = 0; i < 4; i++) {
+      await new Promise(function (resolve) { setTimeout(resolve, 1500); });
+      var statusRes = await fetch(statusUrl);
+      var statusData = await statusRes.json();
+      if (statusData.status_code === 'FINISHED') break;
+      if (statusData.status_code === 'ERROR') {
+        return shared.json(502, { ok: false, error: 'media_processing_failed', detail: statusData });
+      }
+      // IN_PROGRESS면 계속 대기 (마지막 시도까지 FINISHED가 안 되면, 그래도 일단 게시를 시도합니다 —
+      // 대부분의 경우 이 시점이면 처리가 끝나 있고, 정말 안 끝났다면 아래 게시 호출이 명확한 오류를 반환합니다)
+    }
+
     // ② 컨테이너 게시
     var publishRes = await fetch(GRAPH_BASE + '/' + IG_USER_ID + '/media_publish', {
       method: 'POST',
